@@ -62,6 +62,13 @@ return 0;
 cpu_exec(n);
   return 0;
 }
+static int cmd_info(char*args)
+{if(strcmp(args,"r"))
+{
+  printf("1111");
+}
+return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -72,7 +79,8 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  {"si","singal step",cmd_si}
+  {"si","singal step",cmd_si},
+  {"info","show rgister or monitor", cmd_info}
   /* TODO: Add more commands */
 
 };
