@@ -24,8 +24,8 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-printf("11");
-//printf("reg:",cpu.gpr[0]);
+//printf("11");
+printf("reg:%d",cpu.gpr[0]);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
