@@ -65,7 +65,7 @@ cpu_exec(n);
 static int cmd_info(char*args)
 {if(!strcmp(args,"r"))
 {
-  assert(0);
+isa_reg_display();
 }
 return 0;
 }
