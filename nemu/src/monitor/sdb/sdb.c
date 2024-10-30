@@ -53,7 +53,12 @@ static int cmd_q(char *args) {
   return -1;
 }
 static int cmd_si(char*args)
-{int n=atoi(args);
+{if(args==NULL)
+{
+cpu_exec(1);
+
+}
+  int n=atoi(args);
 cpu_exec(n);
   return 0;
 }
