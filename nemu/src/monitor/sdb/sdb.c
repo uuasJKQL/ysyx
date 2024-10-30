@@ -65,7 +65,7 @@ cpu_exec(n);
 static int cmd_info(char*args)
 {if(strcmp(args,"r"))
 {
-  printf("1111");
+  assert(0);
 }
 return 0;
 }
