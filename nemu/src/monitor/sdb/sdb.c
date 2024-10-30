@@ -64,7 +64,7 @@ cpu_exec(n);
 }
 static int cmd_info(char*args)
 {if(!strcmp(args,"r"))
-{printf("1111");
+{
 isa_reg_display();
 }
 return 0;
