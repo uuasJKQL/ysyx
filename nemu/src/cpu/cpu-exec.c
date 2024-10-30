@@ -96,6 +96,7 @@ void assert_fail_msg() {
   statistic();
 }
 
+
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
   g_print_step = (n < MAX_INST_TO_PRINT);
