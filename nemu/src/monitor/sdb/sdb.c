@@ -63,7 +63,7 @@ cpu_exec(n);
   return 0;
 }
 static int cmd_info(char*args)
-{if(strcmp(args,"r"))
+{if(!strcmp(args,"r"))
 {
   assert(0);
 }
