@@ -28,7 +28,7 @@ void isa_reg_display() {
 //printf("11");
 for(int i=0;i<32;i++)
 {
-printf("reg--%s:0x%x\n",regs[i],cpu.gpr[2]);
+printf("reg--%s:0x%x\n",regs[i],cpu.gpr[i]);
 //printf("reg:0x%x",cpu.pc);
 
 }
