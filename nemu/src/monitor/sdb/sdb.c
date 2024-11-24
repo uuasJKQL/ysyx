@@ -69,6 +69,11 @@ isa_reg_display();
 }
 return 0;
 }
+static int cmd_x(char*args)
+{
+  printf("%s",args);
+  return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -80,7 +85,8 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   {"si","singal step",cmd_si},
-  {"info","show rgister or monitor", cmd_info}
+  {"info","show rgister or monitor", cmd_info},
+  {"x","Scan memory",cmd_x}
   /* TODO: Add more commands */
 
 };
