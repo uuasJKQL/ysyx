@@ -18,7 +18,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
+#include<math.h>
+#include<memory/vaddr.h>
 static int is_batch_mode = false;
 
 void init_regex();
@@ -70,8 +71,20 @@ isa_reg_display();
 return 0;
 }
 static int cmd_x(char*args)
-{
-  printf("%s",args);
+{char * Nbyte= strtok(args, " ");
+  char *point = Nbyte + strlen(Nbyte) + 1;
+int N=atoi(Nbyte);
+int k=strlen(point);
+int p=atoi(point);
+int sum=0;
+for(int j=0;j<k;j++ )
+{sum+=p%10*16*pow(16,j);
+p/=10;
+}
+for(int i=0;i<N;i++)
+{vaddr_read(sum,4);
+  
+}
   return 0;
 }
 static int cmd_help(char *args);
