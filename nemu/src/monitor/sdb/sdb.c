@@ -70,6 +70,14 @@ isa_reg_display();
 }
 return 0;
 }
+unsigned int D_to_H(unsigned int a)
+{unsigned int sum=0;
+for(int j=0;j<8;j++ )
+{sum+=a%10*16*pow(16,j);
+a/=10;
+}
+return sum;
+}
 static int cmd_x(char*args)
 {char * Nbyte= strtok(args, " ");
   char *point = Nbyte + strlen(Nbyte) + 3;
@@ -82,7 +90,8 @@ for(int j=0;j<k;j++ )
 p/=10;
 }
 for(int i=0;i<N;i++)
-{printf("%u  ",vaddr_read(sum+4*i,4));
+{
+  printf("%u  ",D_to_H(vaddr_read(sum+4*i,4)));
   
 }
   return 0;
