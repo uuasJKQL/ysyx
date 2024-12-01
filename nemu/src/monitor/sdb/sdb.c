@@ -72,7 +72,7 @@ return 0;
 }
 static int cmd_x(char*args)
 {char * Nbyte= strtok(args, " ");
-  char *point = Nbyte + strlen(Nbyte) + 1;
+  char *point = Nbyte + strlen(Nbyte) + 3;
 int N=atoi(Nbyte);
 int k=strlen(point);
 int p=atoi(point);
