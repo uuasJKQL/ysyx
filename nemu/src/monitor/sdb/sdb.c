@@ -91,7 +91,7 @@ p/=10;
 }
 for(int i=0;i<N;i++)
 {
-  printf("%u  ",D_to_H(vaddr_read(sum+4*i,4)));
+  printf("%ux  ",vaddr_read(sum+4*i,4));
   
 }
   return 0;
