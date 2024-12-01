@@ -82,7 +82,7 @@ for(int j=0;j<k;j++ )
 p/=10;
 }
 for(int i=0;i<N;i++)
-{printf("%d  ",vaddr_read(sum+4*i,4));
+{printf("%u  ",vaddr_read(sum+4*i,4));
   
 }
   return 0;
