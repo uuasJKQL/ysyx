@@ -96,14 +96,16 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
 
-        // switch (rules[i].token_type) {
-        //   case 256:break;
-        //   case 257:break;
-        //   case 258:tokens[nr_token].type=TK_number;
-        //            strncpy(tokens[nr_token].str,e+position-substr_len,substr_len);
-        //            break;
-        //   default: TODO();
-        // }
+        switch (rules[i].token_type) {
+          case TK_NOTYPE:break;
+          case TK_EQ:break;
+          case TK_number:tokens[nr_token].type=TK_number;
+                   strncpy(tokens[nr_token].str,e+position-substr_len,substr_len);
+                   printf("%s",tokens[nr_token].str);
+                   break;
+          case  '+':  break;
+          default: TODO();
+        }
 nr_token++;
         break;
       }
