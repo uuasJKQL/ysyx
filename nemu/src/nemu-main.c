@@ -18,8 +18,11 @@
 void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
+word_t expr(char *e, bool *success);
 int is_exit_status_bad();
-
+char buf_test[20];
+char*temp;
+bool *s;
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
@@ -27,7 +30,15 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
-
+FILE *fp;
+ fp = fopen("input.txt" , "r");
+   if(fp == NULL) {
+      perror("打开文件时发生错误");
+      return(-1);
+   }
+temp=fgets(buf_test,20,fp);
+ fclose(fp);
+expr(buf_test,s);
   /* Start engine. */
   engine_start();
 
