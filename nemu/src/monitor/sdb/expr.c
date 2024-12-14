@@ -97,13 +97,19 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          case TK_NOTYPE:break;
-          case TK_EQ:break;
+          case TK_NOTYPE:tokens[nr_token].type=TK_NOTYPE;
+                     strcpy(tokens[nr_token].str," ");
+                     break ;
+          case TK_EQ:tokens[nr_token].type=TK_number;
+                     strcpy(tokens[nr_token].str,"==");
+                     break;
           case TK_number:tokens[nr_token].type=TK_number;
                    strncpy(tokens[nr_token].str,e+position-substr_len,substr_len);
-                   printf("%s",tokens[nr_token].str);
-                   break;
-          case  '+':  break;
+                  break;
+          case  '+': tokens[nr_token].type='+';
+                   strcpy(tokens[nr_token].str,"+");
+                     break;
+        
           default: TODO();
         }
 nr_token++;
@@ -130,7 +136,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  
 
   return 0;
 }
