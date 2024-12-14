@@ -22,7 +22,8 @@ word_t expr(char *e, bool *success);
 int is_exit_status_bad();
 char buf_test[20];
 char*temp;
-bool *s;
+bool a;
+bool *s=&a;
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
