@@ -65,6 +65,7 @@ void init_regex() {
 
 typedef struct token {
   int type;
+
   char str[32];
 } Token;
 
@@ -110,7 +111,8 @@ nr_token++;
 
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
-      return false;
+      position++;
+      //return false;
     }
   }
 
@@ -119,7 +121,7 @@ nr_token++;
 
 
 word_t expr(char *e, bool *success) {
-  printf("%s\n",e);
+//  printf("%s\n",e);
   if (!make_token(e)) {
     *success = false;
     return 0;
