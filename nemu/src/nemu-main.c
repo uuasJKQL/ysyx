@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 FILE *fp;
- fp = fopen("input.txt" , "r");
+ fp = fopen("input" , "r");
    if(fp == NULL) {
       perror("打开文件时发生错误");
       return(-1);
