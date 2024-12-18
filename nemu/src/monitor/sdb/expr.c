@@ -137,7 +137,8 @@ nr_token++;
 
   return true;
 }
-uint32_t eval(int p, int q) {
+uint32_t eval(int p, int q) 
+{
   int op_type=0;
   int op=0;
   bool op_t=1;
