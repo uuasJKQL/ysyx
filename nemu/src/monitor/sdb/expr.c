@@ -159,7 +159,9 @@ if(op_t==1)
 
   }
   if (p > q) {
-   printf("error :p>q");
+   printf("error :p>q\n");
+   printf("p\n%d",p);
+   printf("q\n%d",q);
     return false;
   }
   else if (p == q) {
