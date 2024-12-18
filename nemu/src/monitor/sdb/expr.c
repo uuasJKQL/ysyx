@@ -155,13 +155,12 @@ if(op_t==1)
   break;
   }
   }
-
-
-  }
+    }
+    printf("op and optype:%d%d\n",op,op_type);
   if (p > q) {
    printf("error :p>q\n");
-   printf("p\n%d",p);
-   printf("q\n%d",q);
+   printf("p%d\n",p);
+   printf("q%d\n",q);
     return false;
   }
   else if (p == q) {
