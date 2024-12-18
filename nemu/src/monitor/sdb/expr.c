@@ -21,7 +21,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,TK_number
+  TK_NOTYPE = 256, TK_EQ,TK_number,
 
   /* TODO: Add more token types */
 
@@ -39,7 +39,9 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
-  {"[0-9]+",TK_number}
+  {"[0-9]+",TK_number},
+  {"\\(",'('},
+  {"\\)",')'}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -49,6 +51,10 @@ static regex_t re[NR_REGEX] = {};
 /* Rules are used for many times.
  * Therefore we compile them only once before any usage.
  */
+bool check_parentheses(int p,int q)
+{
+  return true;
+}
 void init_regex() {
   int i;
   char error_msg[128];
@@ -126,6 +132,48 @@ nr_token++;
 
   return true;
 }
+uint32_t eval(int p, int q) {
+  int op_type=0;
+  int op=0;
+  
+  for(int i=q;i>=0;i--)
+  {if(tokens[i].type=='+')
+  {for(int j=i;j>0;j--)
+  {if(tokens[j].type=='(')
+{}
+  }
+
+  }
+
+
+  }
+  if (p > q) {
+   printf("error :p>q");
+    return false;
+  }
+  else if (p == q) {
+    return atoi(tokens[q].str);
+  }
+  else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1);
+  }
+  else {
+ 
+   uint32_t val1 = eval(p, op - 1);
+   uint32_t val2 = eval(op + 1, q);
+
+    switch (op_type) {
+      case '+': return val1 + val2;
+      case '-': /* ... */
+      case '*': /* ... */
+      case '/': /* ... */
+      default: assert(0);
+    }
+  }
+}
 
 
 word_t expr(char *e, bool *success) {
@@ -136,7 +184,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  
+//eval();
 
   return 0;
 }
