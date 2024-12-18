@@ -115,7 +115,12 @@ static bool make_token(char *e) {
           case  '+': tokens[nr_token].type='+';
                    strcpy(tokens[nr_token].str,"+");
                      break;
-        
+          case  '(': tokens[nr_token].type='(';
+                   strcpy(tokens[nr_token].str,"(");
+                     break;
+         case  ')': tokens[nr_token].type=')';
+                   strcpy(tokens[nr_token].str,")");
+                     break;
           default: TODO();
         }
 nr_token++;
