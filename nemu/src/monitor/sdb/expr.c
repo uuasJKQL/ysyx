@@ -116,7 +116,7 @@ static bool make_token(char *e) {
                    strcpy(tokens[nr_token].str,"+");
                      break;
         
-          //default: TODO();
+          default: TODO();
         }
 nr_token++;
         break;
@@ -135,14 +135,19 @@ nr_token++;
 uint32_t eval(int p, int q) {
   int op_type=0;
   int op=0;
-  
+  bool op_t=1;
   for(int i=q;i>=0;i--)
   {if(tokens[i].type=='+')
   {for(int j=i;j>0;j--)
   {if(tokens[j].type=='(')
-{}
+{op_t=0;}
   }
-
+if(op_t==1)
+{
+  op_type='+';
+  op=i;
+  break;
+  }
   }
 
 
@@ -184,7 +189,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-//eval();
+printf("result:%d/n",eval(0,nr_token));
 
   return 0;
 }
