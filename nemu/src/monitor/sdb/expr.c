@@ -53,7 +53,7 @@ static regex_t re[NR_REGEX] = {};
  */
 bool check_parentheses(int p,int q)
 {
-  return true;
+  return false;
 }
 void init_regex() {
   int i;
