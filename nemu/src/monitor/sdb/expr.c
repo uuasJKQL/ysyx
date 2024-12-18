@@ -116,7 +116,7 @@ static bool make_token(char *e) {
                    strcpy(tokens[nr_token].str,"+");
                      break;
         
-          default: TODO();
+          //default: TODO();
         }
 nr_token++;
         break;
