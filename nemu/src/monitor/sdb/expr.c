@@ -41,7 +41,10 @@ static struct rule {
   {"==", TK_EQ},        // equal
   {"[0-9]+",TK_number},
   {"\\(",'('},
-  {"\\)",')'}
+  {"\\)",')'},
+  {"-",'-'},
+  {"\\*",'*'},
+  {"/",'/'}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -53,7 +56,7 @@ static regex_t re[NR_REGEX] = {};
  */
 bool check_parentheses(int p,int q)
 {
-  return true;
+  return false;
 }
 void init_regex() {
   int i;
@@ -115,7 +118,23 @@ static bool make_token(char *e) {
           case  '+': tokens[nr_token].type='+';
                    strcpy(tokens[nr_token].str,"+");
                      break;
-        
+          case  '(': tokens[nr_token].type='(';
+                   strcpy(tokens[nr_token].str,"(");
+                     break;
+         case  ')': tokens[nr_token].type=')';
+                   strcpy(tokens[nr_token].str,")");
+                     break;
+          case  '-': tokens[nr_token].type='-';
+                     strcpy(tokens[nr_token].str,"-");
+                      break;   
+          case  '*': tokens[nr_token].type='*';
+                      strcpy(tokens[nr_token].str,"*");
+                         break;
+          case  '/': tokens[nr_token].type='/';
+                      strcpy(tokens[nr_token].str,"/");
+                      break;            
+                       
+
           default: TODO();
         }
 nr_token++;
@@ -132,23 +151,46 @@ nr_token++;
 
   return true;
 }
-uint32_t eval(int p, int q) {
+uint32_t eval(int p, int q) 
+{
   int op_type=0;
-  int op=0;
-  
-  for(int i=q;i>=0;i--)
-  {if(tokens[i].type=='+')
-  {for(int j=i;j>0;j--)
+  int op_p=0;
+  bool op_f=0;
+  for(int i=q;i>=p;i--)
+  {
+    if(tokens[i].type=='+'|| tokens[i].type=='-')
+  {
+    for(int j=i;j>0;j--)
   {if(tokens[j].type=='(')
-{}
+{continue;}
   }
+op_f=1;
+  op_type=tokens[i].type;
+  op_p=i;
+  break;
+  } }
+  if(!op_f)
+  {for(int i=q;i>=p;i--)
+    {
+      if(tokens[i].type=='*'||tokens[i].type=='/' )
+    {
+      for(int j=i;j>0;j--)
+    {if(tokens[j].type=='(')
+  {continue;}
+    }
+  op_f=1;
+    op_type=tokens[i].type;
+    op_p=i;
+    break;
+    } }
+
 
   }
-
-
-  }
+    printf("op position and optype:%d and %d\n",op_p,op_type);
   if (p > q) {
-   printf("error :p>q");
+   printf("error :p>q\n");
+   printf("p%d\n",p);
+   printf("q%d\n",q);
     return false;
   }
   else if (p == q) {
@@ -162,14 +204,14 @@ uint32_t eval(int p, int q) {
   }
   else {
  
-   uint32_t val1 = eval(p, op - 1);
-   uint32_t val2 = eval(op + 1, q);
+   uint32_t val1 = eval(p, op_p - 1);
+   uint32_t val2 = eval(op_p + 1, q);
 
     switch (op_type) {
       case '+': return val1 + val2;
-      case '-': /* ... */
-      case '*': /* ... */
-      case '/': /* ... */
+      case '-': return val1-val2;/* ... */
+      case '*': return val1*val2;/* ... */
+      case '/': return val1/val2;/* ... */
       default: assert(0);
     }
   }
@@ -184,7 +226,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-//eval();
+printf("result:%d\n",eval(0,nr_token-1));
 
   return 0;
 }
