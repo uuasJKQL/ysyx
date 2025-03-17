@@ -158,7 +158,7 @@ uint32_t eval(int p, int q)
   bool op_f=0;
   for(int i=q;i>=0;i--)
   {
-    if(tokens[i].type==('+'||'-') )
+    if(tokens[i].type=='+'|| tokens[i].type=='-')
   {
     for(int j=i;j>0;j--)
   {if(tokens[j].type=='(')
