@@ -156,7 +156,7 @@ uint32_t eval(int p, int q)
   int op_type=0;
   int op_p=0;
   bool op_f=0;
-  for(int i=q;i>=0;i--)
+  for(int i=q;i>=p;i--)
   {
     if(tokens[i].type=='+'|| tokens[i].type=='-')
   {
@@ -170,7 +170,7 @@ op_f=1;
   break;
   } }
   if(!op_f)
-  {for(int i=q;i>=0;i--)
+  {for(int i=q;i>=p;i--)
     {
       if(tokens[i].type=='*'||tokens[i].type=='/' )
     {
@@ -186,7 +186,7 @@ op_f=1;
 
 
   }
-    printf("op and optype:%d and %d\n",op_p,op_type);
+    printf("op position and optype:%d and %d\n",op_p,op_type);
   if (p > q) {
    printf("error :p>q\n");
    printf("p%d\n",p);
