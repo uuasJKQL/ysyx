@@ -172,7 +172,7 @@ op_f=1;
   if(!op_f)
   {for(int i=q;i>=0;i--)
     {
-      if(tokens[i].type==('*'||'/') )
+      if(tokens[i].type=='*'||tokens[i].type=='/' )
     {
       for(int j=i;j>0;j--)
     {if(tokens[j].type=='(')
