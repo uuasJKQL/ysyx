@@ -41,7 +41,10 @@ static struct rule {
   {"==", TK_EQ},        // equal
   {"[0-9]+",TK_number},
   {"\\(",'('},
-  {"\\)",')'}
+  {"\\)",')'},
+  {"-",'-'},
+  {"\\*",'*'},
+  {"/",'/'}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -121,6 +124,17 @@ static bool make_token(char *e) {
          case  ')': tokens[nr_token].type=')';
                    strcpy(tokens[nr_token].str,")");
                      break;
+          case  '-': tokens[nr_token].type='-';
+                     strcpy(tokens[nr_token].str,"-");
+                      break;   
+          case  '*': tokens[nr_token].type='*';
+                      strcpy(tokens[nr_token].str,"*");
+                         break;
+          case  '/': tokens[nr_token].type='/';
+                      strcpy(tokens[nr_token].str,"/");
+                      break;            
+                       
+
           default: TODO();
         }
 nr_token++;
@@ -140,23 +154,39 @@ nr_token++;
 uint32_t eval(int p, int q) 
 {
   int op_type=0;
-  int op=0;
-  bool op_t=1;
+  int op_p=0;
+  bool op_f=0;
   for(int i=q;i>=0;i--)
-  {if(tokens[i].type=='+')
-  {for(int j=i;j>0;j--)
+  {
+    if(tokens[i].type==('+'||'-') )
+  {
+    for(int j=i;j>0;j--)
   {if(tokens[j].type=='(')
-{op_t=0;}
+{continue;}
   }
-if(op_t==1)
-{
-  op_type='+';
-  op=i;
+op_f=1;
+  op_type=tokens[i].type;
+  op_p=i;
   break;
-  }
-  }
+  } }
+  if(!op_f)
+  {for(int i=q;i>=0;i--)
+    {
+      if(tokens[i].type==('*'||'/') )
+    {
+      for(int j=i;j>0;j--)
+    {if(tokens[j].type=='(')
+  {continue;}
     }
-    printf("op and optype:%d%d\n",op,op_type);
+  op_f=1;
+    op_type=tokens[i].type;
+    op_p=i;
+    break;
+    } }
+
+
+  }
+    printf("op and optype:%d and %d\n",op_p,op_type);
   if (p > q) {
    printf("error :p>q\n");
    printf("p%d\n",p);
@@ -174,14 +204,14 @@ if(op_t==1)
   }
   else {
  
-   uint32_t val1 = eval(p, op - 1);
-   uint32_t val2 = eval(op + 1, q);
+   uint32_t val1 = eval(p, op_p - 1);
+   uint32_t val2 = eval(op_p + 1, q);
 
     switch (op_type) {
       case '+': return val1 + val2;
-      case '-': /* ... */
-      case '*': /* ... */
-      case '/': /* ... */
+      case '-': return val1-val2;/* ... */
+      case '*': return val1*val2;/* ... */
+      case '/': return val1/val2;/* ... */
       default: assert(0);
     }
   }
