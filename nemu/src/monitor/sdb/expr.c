@@ -78,22 +78,34 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 bool check_parentheses(int p,int q)
+{bool parentheses=0;
+  int p_sum=0;
+  if(tokens[p].type=='('&&tokens[q].type==')')
+  {parentheses=1;
+    for(int i=p;i<=q;i++)
+  {if(tokens[i].type=='(')
+{p_sum++;
+
+}
+else if(tokens[i].type==')')
+{p_sum--;}
+if(p_sum==0)
+parentheses=0;
+else if(p_sum<0)
 {
-  if(tokens[p].type=='(')
-  {if(tokens[q].type==')')
-  return true;
-  else
-  printf("error:( without )");
- // assert(0);
-  }
-  else if
-  (tokens[q].type==')')
-  {if(tokens[p].type=='(')
-  return true;
-  else
-  printf("error:) without )");
-  //assert(0);
-  }
+  printf("bad expresson");
+  assert(0);
+}
+}
+if(p_sum>0)
+{
+  printf("bad expresson");
+  assert(0);
+}
+
+return parentheses;
+ 
+}
   
   return false;
 }
