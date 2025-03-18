@@ -195,7 +195,7 @@ uint32_t eval(int p, int q)
       if(tokens[i].type=='+'|| tokens[i].type=='-')
     {
       for(int j=(i-p>q-i?q-i:i-p);j>0;j--)
-    {if(check_parentheses(j-i,j+i));
+    {if(check_parentheses(i-j,j+i));
   {op_true=0;
     break;
                }
