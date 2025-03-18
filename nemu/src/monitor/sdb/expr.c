@@ -97,6 +97,7 @@ bool check_parentheses(int p,int q)
   
   return false;
 }
+
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -194,12 +195,19 @@ uint32_t eval(int p, int q)
     {bool op_true=1;
       if(tokens[i].type=='+'|| tokens[i].type=='-')
     {
-      for(int j=(i-p>q-i?q-i:i-p);j>0;j--)
-    {if(check_parentheses(i-j,j+i))
-  {op_true=0;
+      for(int j=1;j<=(i-p>q-i?q-i:i-p);j++)
+    {
+      if(tokens[i+j].type=='('||tokens[i-j].type==')')
+  {
     break;
                }
+       else if(tokens[i+j].type==')'||tokens[i-j].type=='(')        
+    {
+      op_true=0;
+      break;
+
     }
+      }
     if(op_true)
     {
   op_f=1;
@@ -212,13 +220,19 @@ uint32_t eval(int p, int q)
     {for(int i=q;i>=p;i--)
       {bool op_true=1;
         if(tokens[i].type=='*'||tokens[i].type=='/' )
+      {   for(int j=1;j<=(i-p>q-i?q-i:i-p);j++)
+        {
+          if(tokens[i+j].type=='('||tokens[i-j].type==')')
       {
-        for(int j=(i-p>q-i?q-i:i-p);j>0;j--)
-        {if(check_parentheses(j-i,j+i));
-      {op_true=0;
         break;
                    }
+           else if(tokens[i+j].type==')'||tokens[i-j].type=='(')        
+        {
+          op_true=0;
+          break;
+    
         }
+          }
     if (op_true)
     {  op_f=1;
       op_type=tokens[i].type;
