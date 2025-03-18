@@ -32,7 +32,9 @@ static char *code_format =
 "}";
 
 static void gen_rand_expr() {
-  buf[0]="0";
+  buf[0]='1';
+  buf[1]='+';
+  buf[2]='1';
 }
 
 int main(int argc, char *argv[]) {
