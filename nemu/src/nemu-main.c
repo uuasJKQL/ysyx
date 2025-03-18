@@ -20,7 +20,7 @@ void am_init_monitor();
 void engine_start();
 word_t expr(char *e, bool *success);
 int is_exit_status_bad();
-char buf_test[20];
+char buf_test[200];
 char*temp;
 bool a;
 bool *s=&a;
@@ -37,7 +37,7 @@ FILE *fp;
       perror("打开文件时发生错误");
       return(-1);
    }
-temp=fgets(buf_test,20,fp);
+temp=fgets(buf_test,200,fp);
  fclose(fp);
 expr(buf_test,s);
   /* Start engine. */
