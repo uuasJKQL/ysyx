@@ -54,10 +54,7 @@ static regex_t re[NR_REGEX] = {};
 /* Rules are used for many times.
  * Therefore we compile them only once before any usage.
  */
-bool check_parentheses(int p,int q)
-{
-  return false;
-}
+
 void init_regex() {
   int i;
   char error_msg[128];
@@ -80,7 +77,26 @@ typedef struct token {
 
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
-
+bool check_parentheses(int p,int q)
+{
+  if(tokens[p].type=='(')
+  {if(tokens[q].type==')')
+  return true;
+  else
+  printf("error:( without )");
+  assert(0);
+  }
+  else if
+  (tokens[q].type==')')
+  {if(tokens[p].type=='(')
+  return true;
+  else
+  printf("error:) without )");
+  assert(0);
+  }
+  
+  return false;
+}
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -157,31 +173,43 @@ uint32_t eval(int p, int q)
   int op_p=0;
   bool op_f=0;
   for(int i=q;i>=p;i--)
-  {
+  {bool op_true=1;
     if(tokens[i].type=='+'|| tokens[i].type=='-')
   {
-    for(int j=i;j>0;j--)
-  {if(tokens[j].type=='(')
-{continue;}
+    for(int j=(i-p>q-i?q-i:i-p);j>0;j--)
+  {if(check_parentheses(j-i,j+i));
+{op_true=0;
+  break;
+             }
   }
+  if(op_true)
+  {
 op_f=1;
   op_type=tokens[i].type;
   op_p=i;
-  break;
-  } }
+  break;}
+  } 
+}
   if(!op_f)
   {for(int i=q;i>=p;i--)
-    {
+    {bool op_true=1;
       if(tokens[i].type=='*'||tokens[i].type=='/' )
     {
-      for(int j=i;j>0;j--)
-    {if(tokens[j].type=='(')
-  {continue;}
-    }
-  op_f=1;
+      for(int j=(i-p>q-i?q-i:i-p);j>0;j--)
+      {if(check_parentheses(j-i,j+i));
+    {op_true=0;
+      break;
+                 }
+      }
+  if (op_true)
+  {  op_f=1;
     op_type=tokens[i].type;
     op_p=i;
     break;
+  
+  }
+  
+    
     } }
 
 
