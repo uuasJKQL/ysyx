@@ -97,7 +97,7 @@ else if(p_sum<0)
   assert(0);
 }
 }
-if(p_sum>0)
+if(p_sum>1)
 {
   printf("bad expresson");
   assert(0);
