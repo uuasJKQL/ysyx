@@ -84,7 +84,7 @@ bool check_parentheses(int p,int q)
   return true;
   else
   printf("error:( without )");
-  assert(0);
+ // assert(0);
   }
   else if
   (tokens[q].type==')')
@@ -92,7 +92,7 @@ bool check_parentheses(int p,int q)
   return true;
   else
   printf("error:) without )");
-  assert(0);
+  //assert(0);
   }
   
   return false;
