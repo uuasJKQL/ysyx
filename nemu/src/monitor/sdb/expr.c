@@ -82,7 +82,7 @@ bool check_parentheses(int p,int q)
   int p_sum=0;
   if(tokens[p].type=='('&&tokens[q].type==')')
   {parentheses=1;
-    for(int i=p;i<=q;i++)
+    for(int i=p;i<q;i++)
   {if(tokens[i].type=='(')
 {p_sum++;
 
