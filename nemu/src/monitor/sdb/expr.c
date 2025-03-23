@@ -135,8 +135,8 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          case TK_NOTYPE:tokens[nr_token].type=TK_NOTYPE;
-                     strcpy(tokens[nr_token].str," ");
+          case TK_NOTYPE:
+                  nr_token--;
                      break ;
           case TK_EQ:tokens[nr_token].type=TK_number;
                      strcpy(tokens[nr_token].str,"==");
@@ -164,7 +164,7 @@ static bool make_token(char *e) {
                       break;            
                        
 
-          default: TODO();
+          default: printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
         }
 nr_token++;
         break;
