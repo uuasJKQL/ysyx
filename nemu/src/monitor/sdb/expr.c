@@ -262,7 +262,7 @@ uint32_t eval(int p, int q)
       printf("op position and optype:%d and %d\n",op_p,op_type);
    uint32_t val1 = eval(p, op_p - 1);
    uint32_t val2 = eval(op_p + 1, q);
-//( 9*9-(7)-2-7)/(((1)) )
+
     switch (op_type) {
       case '+': return val1 + val2;
       case '-': return val1-val2;/* ... */

@@ -61,6 +61,7 @@ while (fgets(line, sizeof(line), fp)) {
         // 提取右侧表达式
         char *exprp = space_pos + 1;
         strcpy(expressions,exprp); // 复制字符串
+      printf("%s",expressions);
         if(expr(expressions,s)!=result)
      error_counter++  ;
      else
