@@ -28,6 +28,7 @@ uint32_t result ;
 char line[1024*1025];
 char expressions[1024*1024];
 int error_counter=0;
+int line_i=0;
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
@@ -61,9 +62,10 @@ while (fgets(line, sizeof(line), fp)) {
         char *exprp = space_pos + 1;
         strcpy(expressions,exprp); // 复制字符串
         if(expr(expressions,s)!=result)
-      
-      error_counter++  ;
-
+     error_counter++  ;
+     else
+     printf("pass:%d",line_i);;
+line_i++;
       }
  fclose(fp);
 printf("error num:%d",error_counter);
