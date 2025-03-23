@@ -20,10 +20,15 @@ void am_init_monitor();
 void engine_start();
 word_t expr(char *e, bool *success);
 int is_exit_status_bad();
-char buf_test[20];
+
 char*temp;
 bool a;
 bool *s=&a;
+uint32_t result ;
+char line[1024*1025];
+char expressions[1024*1024];
+int error_counter=0;
+int line_i=0;
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
@@ -32,14 +37,39 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 FILE *fp;
- fp = fopen("input" , "r");
+ fp = fopen("tools/gen-expr/build/input", "r");
    if(fp == NULL) {
       perror("打开文件时发生错误");
       return(-1);
    }
-temp=fgets(buf_test,20,fp);
+
+while (fgets(line, sizeof(line), fp)) {
+        // 去除换行符
+        line[strcspn(line, "\n")] = '\0';
+
+        // 找到第一个空格位置
+        char *space_pos = strchr(line, ' ');
+        if (!space_pos) {
+            fprintf(stderr, "格式错误\n");
+            continue;
+        }
+
+        // 分割左右部分
+        *space_pos = '\0'; // 切割字符串
+        result= atoi(line); // 转换左侧数字
+
+        // 提取右侧表达式
+        char *exprp = space_pos + 1;
+        strcpy(expressions,exprp); // 复制字符串
+      printf("%s\n",expressions);
+        if(expr(expressions,s)!=result)
+     error_counter++  ;
+     else
+     printf("pass:%d \n",line_i);;
+line_i++;
+      }
  fclose(fp);
-expr(buf_test,s);
+printf("error num:%d",error_counter);
   /* Start engine. */
   engine_start();
 

@@ -21,7 +21,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,TK_number,
+  TK_NOTYPE = 256, TK_EQ,TK_number,TK_U
 
   /* TODO: Add more token types */
 
@@ -44,7 +44,8 @@ static struct rule {
   {"\\)",')'},
   {"-",'-'},
   {"\\*",'*'},
-  {"/",'/'}
+  {"/",'/'},
+{"u",TK_U}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -54,10 +55,7 @@ static regex_t re[NR_REGEX] = {};
 /* Rules are used for many times.
  * Therefore we compile them only once before any usage.
  */
-bool check_parentheses(int p,int q)
-{
-  return false;
-}
+
 void init_regex() {
   int i;
   char error_msg[128];
@@ -77,9 +75,41 @@ typedef struct token {
 
   char str[32];
 } Token;
-
-static Token tokens[32] __attribute__((used)) = {};
+//( 9*9-(7)-2-7)/(((1)) )
+static Token tokens[1024*1024] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
+bool check_parentheses(int p,int q)
+{bool parentheses=0;
+  int p_sum=0;
+  if(tokens[p].type=='('&&tokens[q].type==')')
+  {parentheses=1;
+    for(int i=p;i<q;i++)
+  {if(tokens[i].type=='(')
+{p_sum++;
+
+}
+else if(tokens[i].type==')')
+{p_sum--;}
+if(p_sum==0)
+parentheses=0;
+else if(p_sum<0)
+{
+  printf("bad expresson");
+  assert(0);
+}
+}
+if(p_sum>1)
+{
+  printf("bad expresson");
+  assert(0);
+}
+
+return parentheses;
+ 
+}
+  
+  return false;
+}
 
 static bool make_token(char *e) {
   int position = 0;
@@ -106,12 +136,15 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          case TK_NOTYPE:tokens[nr_token].type=TK_NOTYPE;
-                     strcpy(tokens[nr_token].str," ");
+          case TK_NOTYPE:
+                  nr_token--;
                      break ;
-          case TK_EQ:tokens[nr_token].type=TK_number;
-                     strcpy(tokens[nr_token].str,"==");
-                     break;
+          case TK_U:
+          nr_token--;
+          break;
+            case TK_EQ:tokens[nr_token].type=TK_number;
+               strcpy(tokens[nr_token].str,"==");
+              break;
           case TK_number:tokens[nr_token].type=TK_number;
                    strncpy(tokens[nr_token].str,e+position-substr_len,substr_len);
                   break;
@@ -135,7 +168,7 @@ static bool make_token(char *e) {
                       break;            
                        
 
-          default: TODO();
+          default: printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
         }
 nr_token++;
         break;
@@ -156,37 +189,7 @@ uint32_t eval(int p, int q)
   int op_type=0;
   int op_p=0;
   bool op_f=0;
-  for(int i=q;i>=p;i--)
-  {
-    if(tokens[i].type=='+'|| tokens[i].type=='-')
-  {
-    for(int j=i;j>0;j--)
-  {if(tokens[j].type=='(')
-{continue;}
-  }
-op_f=1;
-  op_type=tokens[i].type;
-  op_p=i;
-  break;
-  } }
-  if(!op_f)
-  {for(int i=q;i>=p;i--)
-    {
-      if(tokens[i].type=='*'||tokens[i].type=='/' )
-    {
-      for(int j=i;j>0;j--)
-    {if(tokens[j].type=='(')
-  {continue;}
-    }
-  op_f=1;
-    op_type=tokens[i].type;
-    op_p=i;
-    break;
-    } }
-
-
-  }
-    printf("op position and optype:%d and %d\n",op_p,op_type);
+  
   if (p > q) {
    printf("error :p>q\n");
    printf("p%d\n",p);
@@ -202,8 +205,65 @@ op_f=1;
      */
     return eval(p + 1, q - 1);
   }
+  
   else {
- 
+    for(int i=q;i>=p;i--)
+    {bool op_true=1;
+      if(tokens[i].type=='+'|| tokens[i].type=='-')
+    {
+      int pare_sum=0;
+      for(int j=1;j<=i-p;j++)
+    {
+      if(tokens[i-j].type==')')
+  {pare_sum--;
+               }
+       else if(tokens[i-j].type=='(')        
+    {pare_sum++;
+     }
+    }
+    if(pare_sum>0)
+    {op_true=0;} 
+    if(op_true)
+    {
+  op_f=1;
+    op_type=tokens[i].type;
+    op_p=i;
+    break;}
+    } 
+  }
+
+    if(!op_f)
+    {for(int i=q;i>=p;i--)
+      {bool op_true=1;
+        if(tokens[i].type=='*'||tokens[i].type=='/' )
+      {  int pare_sum=0;
+        for(int j=1;j<=i-p;j++)
+      {
+        if(tokens[i-j].type==')')
+    {pare_sum--;
+                 }
+         else if(tokens[i-j].type=='(')        
+      {pare_sum++;
+       }
+      }
+      if(pare_sum>0)
+      {op_true=0;} 
+    
+    if (op_true)
+    {  op_f=1;
+      op_type=tokens[i].type;
+      op_p=i;
+      break;
+     }
+    
+      
+      } 
+    }
+    }
+  
+  
+    
+      printf("op position and optype:%d and %d\n",op_p,op_type);
    uint32_t val1 = eval(p, op_p - 1);
    uint32_t val2 = eval(op_p + 1, q);
 
@@ -226,7 +286,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-printf("result:%d\n",eval(0,nr_token-1));
+//printf("result:%d\n",eval(0,nr_token-1));
 
-  return 0;
+  return eval(0,nr_token-1);
 }
