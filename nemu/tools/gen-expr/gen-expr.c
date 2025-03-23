@@ -72,7 +72,8 @@ void gen_num()
   else{
 
   buf [count]=('0'+choose(10));
-count++;
+buf[count+1]='u';
+  count+=2;
 
   }}
 void gen(char n)
