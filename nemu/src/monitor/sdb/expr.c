@@ -227,36 +227,36 @@ uint32_t eval(int p, int q)
     break;}
     } 
   }
+
     if(!op_f)
     {for(int i=q;i>=p;i--)
       {bool op_true=1;
         if(tokens[i].type=='*'||tokens[i].type=='/' )
-      {   for(int j=1;j<=(i-p>q-i?q-i:i-p);j++)
-        {
-          if(tokens[i+j].type=='('||tokens[i-j].type==')')
+      {  int pare_sum=0;
+        for(int j=1;j<=i-p;j++)
       {
-        break;
-                   }
-           else if(tokens[i+j].type==')'||tokens[i-j].type=='(')        
-        {
-          op_true=0;
-          break;
-    
-        }
-          }
+        if(tokens[i-j].type==')')
+    {pare_sum--;
+                 }
+         else if(tokens[i-j].type=='(')        
+      {pare_sum++;
+       }
+      }
+      if(pare_sum>0)
+      {op_true=0;} 
+    }
     if (op_true)
     {  op_f=1;
       op_type=tokens[i].type;
       op_p=i;
       break;
-    
-    }
+     }
     
       
       } }
   
   
-    }
+    
       printf("op position and optype:%d and %d\n",op_p,op_type);
    uint32_t val1 = eval(p, op_p - 1);
    uint32_t val2 = eval(op_p + 1, q);
