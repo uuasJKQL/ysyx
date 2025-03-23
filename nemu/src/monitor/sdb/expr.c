@@ -244,7 +244,7 @@ uint32_t eval(int p, int q)
       }
       if(pare_sum>0)
       {op_true=0;} 
-    }
+    
     if (op_true)
     {  op_f=1;
       op_type=tokens[i].type;
@@ -253,7 +253,9 @@ uint32_t eval(int p, int q)
      }
     
       
-      } }
+      } 
+    }
+    }
   
   
     
