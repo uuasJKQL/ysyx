@@ -21,7 +21,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,TK_number,TK_U
+  TK_NOTYPE = 256, TK_EQ,TK_number,TK_U,TK_NEQ,TK_AND,TK_REG,TK_HEX,TK_P
 
   /* TODO: Add more token types */
 
@@ -39,7 +39,11 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
+  {"!=",TK_NEQ},
+  {"&&",TK_AND},
   {"[0-9]+",TK_number},
+  {"\\$[A-Za-z]\\d+",TK_REG},
+  {"(^|[^\\w])(0[xX][0-9a-fA-F]+)(?![\\w])",TK_HEX},
   {"\\(",'('},
   {"\\)",')'},
   {"-",'-'},
@@ -148,6 +152,11 @@ static bool make_token(char *e) {
           case TK_number:tokens[nr_token].type=TK_number;
                    strncpy(tokens[nr_token].str,e+position-substr_len,substr_len);
                   break;
+           case TK_HEX:   tokens[nr_token].type=TK_HEX;
+           strncpy(tokens[nr_token].str,e+position-substr_len,substr_len);   
+           case TK_REG:   tokens[nr_token].type=TK_REG;
+           strncpy(tokens[nr_token].str,e+position-substr_len,substr_len);   
+            
           case  '+': tokens[nr_token].type='+';
                    strcpy(tokens[nr_token].str,"+");
                      break;
@@ -166,8 +175,12 @@ static bool make_token(char *e) {
           case  '/': tokens[nr_token].type='/';
                       strcpy(tokens[nr_token].str,"/");
                       break;            
-                       
-
+          case  TK_NEQ: tokens[nr_token].type=TK_NEQ;
+                      strcpy(tokens[nr_token].str,"!=");
+                      break;                   
+           case  TK_AND: tokens[nr_token].type=TK_AND;
+                      strcpy(tokens[nr_token].str,"&&");
+                      break;   
           default: printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
         }
 nr_token++;
@@ -178,7 +191,7 @@ nr_token++;
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
       position++;
-      //return false;
+      return false;
     }
   }
 

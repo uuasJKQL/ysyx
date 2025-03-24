@@ -38,7 +38,7 @@ uint32_t choose (uint32_t n)
 return rand()%n;
 }
 void gen_rand_op()
-{if(count>1024*1024)
+{if(count>=1024*1024-1)
 {
   is_full=1;
 }
@@ -65,7 +65,7 @@ count++;
 }
 
 void gen_num()
-{if(count>1024*1024)
+{if(count>=1024*1024-2)
   {
     is_full=1;
   }
@@ -77,7 +77,7 @@ buf[count+1]='u';
 
   }}
 void gen(char n)
-{if(count>1024*1024)
+{if(count>=1024*1024-1)
   {
     is_full=1;
   }
@@ -85,8 +85,10 @@ void gen(char n)
   buf[count]=n;
   count++;
 }}
-static void gen_rand_expr() 
-{
+static bool gen_rand_expr(int depth) 
+{depth++;
+  if(depth>10)
+  {return 0;}
 if(!choose(9))
 {  buf[count]=' ';
  count++ ;
@@ -94,9 +96,10 @@ if(!choose(9))
   
   switch (choose(3)) {
   case 0: gen_num(); break;
-  case 1: gen('('); gen_rand_expr(); gen(')'); break;
-  default: gen_rand_expr(); gen_rand_op(); gen_rand_expr();break;
+  case 1: gen('('); if(!gen_rand_expr(depth))return 0; gen(')'); break;
+  default: if(!gen_rand_expr(depth))return 0; gen_rand_op(); if(!gen_rand_expr(depth))return 0;break;
   }
+  return 1;
 }
 
   
@@ -116,7 +119,10 @@ int main(int argc, char *argv[]) {
   }
   is_full=0;
     count =0;
-    gen_rand_expr();
+    if(!gen_rand_expr(0))
+    { i--;
+      continue;}
+
 if(is_full)
 { i--;
   continue;}
