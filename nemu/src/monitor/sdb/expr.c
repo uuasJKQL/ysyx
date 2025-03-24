@@ -43,7 +43,7 @@ static struct rule {
   {"&&",TK_AND},
   {"[0-9]+",TK_number},
   {"\\$[A-Za-z]\\d+",TK_REG},
-  {"(^|[^\\w])(0[xX][0-9a-fA-F]+)(?![\\w])",TK_HEX},
+  {"0[xX][0-9a-fA-F]+",TK_HEX},
   {"\\(",'('},
   {"\\)",')'},
   {"-",'-'},
