@@ -80,7 +80,7 @@ typedef struct token {
   char str[32];
 } Token;
 //( 9*9-(7)-2-7)/(((1)) )
-static Token tokens[1024*1024] __attribute__((used)) = {};
+static Token tokens[65536] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 bool check_parentheses(int p,int q)
 {bool parentheses=0;
@@ -191,7 +191,7 @@ nr_token++;
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
       position++;
-      return false;
+   //   return false;
     }
   }
 

@@ -25,8 +25,8 @@ char*temp;
 bool a;
 bool *s=&a;
 uint32_t result ;
-char line[1024*1025];
-char expressions[1024*1024];
+char line[65536+128];
+char expressions[65536];
 int error_counter=0;
 int line_i=0;
 int main(int argc, char *argv[]) {
