@@ -80,7 +80,7 @@ typedef struct token {
 
   char str[32];
 } Token;
-//( 9*9-(7)-2-7)/(((1)) )
+
 static Token tokens[65536] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 bool check_parentheses(int p,int q)
