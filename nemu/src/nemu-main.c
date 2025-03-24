@@ -46,7 +46,7 @@ FILE *fp;
 while (fgets(line, sizeof(line), fp)) {
         // 去除换行符
         line[strcspn(line, "\n")] = '\0';
-       // expr(line,s);
+       result=expr(line,s);
         // 找到第一个空格位置
         // char *space_pos = strchr(line, ' ');
         // if (!space_pos) {
