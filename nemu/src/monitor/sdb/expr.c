@@ -260,7 +260,7 @@ uint32_t eval(int p, int q)
     {
     case TK_HEX:
     {
-      char *hex = tokens[p].str;
+      char *hex = tokens[p].str + 2;
       uint32_t val = 0;
       for (; *hex; ++hex)
       {
