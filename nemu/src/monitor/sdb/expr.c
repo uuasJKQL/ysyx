@@ -279,10 +279,11 @@ uint32_t eval(int p, int q)
       return atoi(tokens[q].str);
     case TK_REG:
     {
+      char *rn = tokens[p].str;
+      rn++;
       for (int i = 0; i < 32; i++)
       {
-        char *rn = tokens[p].str;
-        rn++;
+
         if (strcmp(reg_name[i], rn) == 0)
         {
           return cpu.gpr[i];
