@@ -281,7 +281,9 @@ uint32_t eval(int p, int q)
     {
       for (int i = 0; i < 32; i++)
       {
-        if (strcmp(reg_name[i], tokens[p].str) == 0)
+        char *rn = tokens[p].str;
+        rn++;
+        if (strcmp(reg_name[i], rn) == 0)
         {
           return cpu.gpr[i];
         }
