@@ -286,6 +286,7 @@ uint32_t eval(int p, int q)
           return cpu.gpr[i];
         }
       }
+
       printf("reg not found");
       return 0;
     }
