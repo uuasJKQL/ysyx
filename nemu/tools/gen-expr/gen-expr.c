@@ -70,9 +70,8 @@ void gen_num()
     is_full=1;
   }
   else{
-
-  buf [count]=('0'+choose(10));
-buf[count+1]='u';
+buf [count]=('0'+choose(10));
+  buf[count+1]='u';
   count+=2;
 
   }}
