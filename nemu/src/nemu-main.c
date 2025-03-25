@@ -25,8 +25,8 @@ char*temp;
 bool a;
 bool *s=&a;
 uint32_t result ;
-char line[1024*1025];
-char expressions[1024*1024];
+char line[65536+128];
+char expressions[65536];
 int error_counter=0;
 int line_i=0;
 int main(int argc, char *argv[]) {
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 FILE *fp;
- fp = fopen("tools/gen-expr/build/input", "r");
+ fp = fopen("input", "r");
    if(fp == NULL) {
       perror("打开文件时发生错误");
       return(-1);
@@ -46,30 +46,30 @@ FILE *fp;
 while (fgets(line, sizeof(line), fp)) {
         // 去除换行符
         line[strcspn(line, "\n")] = '\0';
-
+       result=expr(line,s);
         // 找到第一个空格位置
-        char *space_pos = strchr(line, ' ');
-        if (!space_pos) {
-            fprintf(stderr, "格式错误\n");
-            continue;
-        }
+        // char *space_pos = strchr(line, ' ');
+        // if (!space_pos) {
+        //     fprintf(stderr, "格式错误\n");
+        //     continue;
+        // }
 
         // 分割左右部分
-        *space_pos = '\0'; // 切割字符串
-        result= atoi(line); // 转换左侧数字
+        // *space_pos = '\0'; // 切割字符串
+        // result= atoi(line); // 转换左侧数字
 
-        // 提取右侧表达式
-        char *exprp = space_pos + 1;
-        strcpy(expressions,exprp); // 复制字符串
-      printf("%s\n",expressions);
-        if(expr(expressions,s)!=result)
-     error_counter++  ;
-     else
-     printf("pass:%d \n",line_i);;
-line_i++;
+        // // 提取右侧表达式
+//         char *exprp = space_pos + 1;
+//         strcpy(expressions,exprp); // 复制字符串
+//       printf("%s\n",expressions);
+//         if(expr(expressions,s)!=result)
+//      error_counter++  ;
+//      else
+//      printf("pass:%d \n",line_i);;
+// line_i++;
       }
  fclose(fp);
-printf("error num:%d",error_counter);
+//printf("error num:%d",error_counter);
   /* Start engine. */
   engine_start();
 

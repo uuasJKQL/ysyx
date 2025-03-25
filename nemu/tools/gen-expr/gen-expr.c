@@ -21,8 +21,8 @@
 #include <string.h>
 #include <stdbool.h>
 // this should be enough
-static char buf[1024*1024] = {};
-static char code_buf[1024*1024+ 128] = {}; // a little larger than `buf`
+static char buf[65536] = {};
+static char code_buf[65536+ 128] = {}; // a little larger than `buf`
 uint32_t count=0;
 bool is_full=0;
 static char *code_format =
@@ -38,7 +38,7 @@ uint32_t choose (uint32_t n)
 return rand()%n;
 }
 void gen_rand_op()
-{if(count>=1024*1024-1)
+{if(count>=65536-1)
 {
   is_full=1;
 }
@@ -65,19 +65,18 @@ count++;
 }
 
 void gen_num()
-{if(count>=1024*1024-2)
+{if(count>=65536-2)
   {
     is_full=1;
   }
   else{
-
-  buf [count]=('0'+choose(10));
-buf[count+1]='u';
+buf [count]=('0'+choose(10));
+  buf[count+1]='u';
   count+=2;
 
   }}
 void gen(char n)
-{if(count>=1024*1024-1)
+{if(count>=65536-1)
   {
     is_full=1;
   }
@@ -96,8 +95,8 @@ if(!choose(9))
   
   switch (choose(3)) {
   case 0: gen_num(); break;
-  case 1: gen('('); gen_rand_expr(depth); gen(')'); break;
-  default: gen_rand_expr(depth); gen_rand_op(); gen_rand_expr(depth);break;
+  case 1: gen('('); if(!gen_rand_expr(depth))return 0; gen(')'); break;
+  default: if(!gen_rand_expr(depth))return 0; gen_rand_op(); if(!gen_rand_expr(depth))return 0;break;
   }
   return 1;
 }
