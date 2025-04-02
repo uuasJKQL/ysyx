@@ -13,17 +13,35 @@ class Vtop___024root final : public VerilatedModule {
   public:
 
     // DESIGN SPECIFIC STATE
-    VL_IN8(a,0,0);
-    VL_IN8(b,0,0);
-    VL_OUT8(f,0,0);
+    VL_IN8(clk,0,0);
+    VL_IN8(clrn,0,0);
+    VL_IN8(ps2_clk,0,0);
+    VL_IN8(ps2_data,0,0);
+    VL_OUT8(nextdata,0,0);
+    VL_OUT8(HEX0,6,0);
+    VL_OUT8(HEX1,6,0);
+    VL_OUT8(HEX2,6,0);
+    VL_OUT8(HEX3,6,0);
+    VL_OUT8(HEX4,6,0);
+    VL_OUT8(HEX5,6,0);
+    CData/*7:0*/ top__DOT__Data;
+    CData/*0:0*/ top__DOT__Ready;
+    CData/*0:0*/ top__DOT__Overflow;
+    CData/*2:0*/ top__DOT__controller__DOT__w_ptr;
+    CData/*2:0*/ top__DOT__controller__DOT__r_ptr;
+    CData/*3:0*/ top__DOT__controller__DOT__count;
+    CData/*2:0*/ top__DOT__controller__DOT__ps2_clk_sync;
+    CData/*0:0*/ top__DOT__controller__DOT____Vlvbound_h1a91ade8__0;
+    CData/*0:0*/ __Vtrigrprev__TOP__clk;
     CData/*0:0*/ __VactContinue;
+    SData/*9:0*/ top__DOT__controller__DOT__buffer;
     IData/*31:0*/ __VstlIterCount;
-    IData/*31:0*/ __VicoIterCount;
     IData/*31:0*/ __VactIterCount;
+    VlUnpacked<CData/*7:0*/, 8> top__DOT__controller__DOT__fifo;
+    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     VlTriggerVec<1> __VstlTriggered;
-    VlTriggerVec<1> __VicoTriggered;
-    VlTriggerVec<0> __VactTriggered;
-    VlTriggerVec<0> __VnbaTriggered;
+    VlTriggerVec<1> __VactTriggered;
+    VlTriggerVec<1> __VnbaTriggered;
 
     // INTERNAL VARIABLES
     Vtop__Syms* const vlSymsp;

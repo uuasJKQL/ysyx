@@ -7,10 +7,10 @@ module top (
     output reg       nextdata,
     output reg [6:0] HEX0,
     output reg [6:0] HEX1,
-    output reg [6:0] HEX2,
-    output reg [6:0] HEX3,
-    output reg [6:0] HEX4,
-    output reg [6:0] HEX5
+    // output reg [6:0] HEX2,
+    // output reg [6:0] HEX3,
+    // output reg [6:0] HEX4,
+    // output reg [6:0] HEX5
 );
     wire [7:0] Data;
     wire       Ready;
@@ -37,7 +37,7 @@ module top (
     always @(posedge clk) begin
 
         if (Ready) nextdata <= 0;
-        
+
     end
 endmodule
 
