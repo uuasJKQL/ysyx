@@ -68,7 +68,22 @@ public:
 
 int main(int argc, char **argv)
 {
-    // ...前面的初始化代码保持不变...
+    Verilated::commandArgs(argc, argv);
+Vtop *dut = new Vtop;
+
+// 初始化波形追踪
+Verilated::traceEverOn(true);
+VerilatedVcdC *tfp = new VerilatedVcdC;
+dut->trace(tfp, 99);
+tfp->open("wave.vcd");
+
+// 初始化信号
+dut->clk = 0;
+dut->clrn = 0; // 先复位  如何更改
+dut->ps2_clk = 1;
+dut->ps2_data = 1;
+dut->nextdata = 0;
+// ...前面的初始化代码保持不变...
 
     vluint64_t global_time = 0; // 全局时间计数器
 
