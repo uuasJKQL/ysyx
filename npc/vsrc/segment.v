@@ -21,6 +21,5 @@ module segment (
             4'he: seg[6:0] = 7'b0000110;
             4'hf: seg[6:0] = 7'b0001110;
         endcase
-
     end
 endmodule
