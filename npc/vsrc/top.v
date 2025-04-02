@@ -36,7 +36,7 @@ module top (
     );
     always @(posedge clk) begin
 
-        nextdata <= 0;
+        if (Ready&~Overflow) nextdata <= 0;
 
     end
 endmodule
