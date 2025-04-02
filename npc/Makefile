@@ -1,6 +1,6 @@
 
 VERILATOR_FLAGS = -Wall --trace --cc --exe --build
-VERILATOR_SOURCES = $(shell find $(abspath ./vsrc) -name "*.v") # 替换为所有Verilog文件
+VERILATOR_SOURCES = $(shell find $(abspath) -name "*.v") # 替换为所有Verilog文件
 TESTBENCH = testbench.cpp  # 测试台代码
 SIM_EXE = obj_dir/Vtop     # Verilator生成的可执行文件路径
 
