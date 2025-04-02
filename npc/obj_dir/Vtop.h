@@ -32,10 +32,7 @@ class Vtop VL_NOT_FINAL : public VerilatedModel {
     VL_OUT8(&nextdata,0,0);
     VL_OUT8(&HEX0,6,0);
     VL_OUT8(&HEX1,6,0);
-    VL_OUT8(&HEX2,6,0);
-    VL_OUT8(&HEX3,6,0);
-    VL_OUT8(&HEX4,6,0);
-    VL_OUT8(&HEX5,6,0);
+    VL_IN8(&__pinNumber8,0,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.

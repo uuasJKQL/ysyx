@@ -20,10 +20,7 @@ class Vtop___024root final : public VerilatedModule {
     VL_OUT8(nextdata,0,0);
     VL_OUT8(HEX0,6,0);
     VL_OUT8(HEX1,6,0);
-    VL_OUT8(HEX2,6,0);
-    VL_OUT8(HEX3,6,0);
-    VL_OUT8(HEX4,6,0);
-    VL_OUT8(HEX5,6,0);
+    VL_IN8(__pinNumber8,0,0);
     CData/*7:0*/ top__DOT__Data;
     CData/*0:0*/ top__DOT__Ready;
     CData/*0:0*/ top__DOT__Overflow;

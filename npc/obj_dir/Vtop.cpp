@@ -18,10 +18,7 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , nextdata{vlSymsp->TOP.nextdata}
     , HEX0{vlSymsp->TOP.HEX0}
     , HEX1{vlSymsp->TOP.HEX1}
-    , HEX2{vlSymsp->TOP.HEX2}
-    , HEX3{vlSymsp->TOP.HEX3}
-    , HEX4{vlSymsp->TOP.HEX4}
-    , HEX5{vlSymsp->TOP.HEX5}
+    , __pinNumber8{vlSymsp->TOP.__pinNumber8}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

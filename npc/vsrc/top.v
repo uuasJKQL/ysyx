@@ -6,7 +6,7 @@ module top (
     input            ps2_data,
     output reg       nextdata,
     output reg [6:0] HEX0,
-    output reg [6:0] HEX1,
+    output reg [6:0] HEX1
     // output reg [6:0] HEX2,
     // output reg [6:0] HEX3,
     // output reg [6:0] HEX4,
