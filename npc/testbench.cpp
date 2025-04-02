@@ -68,49 +68,38 @@ public:
 
 int main(int argc, char **argv)
 {
-    Verilated::commandArgs(argc, argv);
-    Vtop *dut = new Vtop;
+    // ...前面的初始化代码保持不变...
 
-    // 初始化波形追踪
-    Verilated::traceEverOn(true);
-    VerilatedVcdC *tfp = new VerilatedVcdC;
-    dut->trace(tfp, 99);
-    tfp->open("wave.vcd");
+    vluint64_t global_time = 0; // 全局时间计数器
 
-    // 初始化信号
-    dut->clk = 0;
-    dut->clrn = 0; // 先复位
-    dut->ps2_clk = 1;
-    dut->ps2_data = 1;
-    dut->nextdata = 0;
-
-    // 复位操作
-    for (int i = 0; i < 10; ++i)
-    {
+    // 复位操作（使用全局时间）
+    for (int i = 0; i < 10; ++i) {
         dut->clk = !dut->clk;
         dut->eval();
-        tfp->dump(i * 10);
+        tfp->dump(global_time);
+        global_time += 10; // 每次时钟翻转增加10单位时间
     }
-    dut->clrn = 1; // 结束复位
+    dut->clrn = 1;
 
     PS2Sim ps2(dut);
 
-    // 模拟 10 次 Q 键按下松开
-    for (int rep = 0; rep < 10; ++rep)
-    {
-        // 按下 Q
+    // 模拟按键循环（使用统一时间管理）
+    for (int rep = 0; rep < 10; ++rep) {
+        // 发送按键事件（内部会推进时间）
         ps2.send_key(MAKE_Q, true);
-        // 松开 Q
         ps2.send_key(MAKE_Q, false);
 
-        // 间隔 100 个时钟周期
-        for (int i = 0; i < 100; ++i)
-        {
+        // 间隔周期
+        for (int i = 0; i < 100; ++i) {
             dut->clk = !dut->clk;
             dut->eval();
-            tfp->dump(100 * rep + i * 10 + 1000);
+            tfp->dump(global_time);
+            global_time += 10; // 保持时间递增
+            if (i % 10 == 0)   // 降低采样密度
+                global_time += 90;
         }
     }
+
 
     // 清理
     tfp->close();
