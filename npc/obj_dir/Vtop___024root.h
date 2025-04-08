@@ -14,13 +14,13 @@ class Vtop___024root final : public VerilatedModule {
 
     // DESIGN SPECIFIC STATE
     VL_IN8(clk,0,0);
+    VL_IN8(clrn,0,0);
     VL_IN8(ps2_clk,0,0);
     VL_IN8(ps2_data,0,0);
     VL_OUT8(nextdata,0,0);
     VL_OUT8(HEX0,6,0);
     VL_OUT8(HEX1,6,0);
     VL_OUT8(Ready,0,0);
-    VL_OUT8(clrn,0,0);
     CData/*7:0*/ top__DOT__Data;
     CData/*0:0*/ top__DOT__Overflow;
     CData/*2:0*/ top__DOT__controller__DOT__w_ptr;

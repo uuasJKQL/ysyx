@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 
             count = 0;
             dut->ps2_clk = !dut->ps2_clk;
-            if (dut->ps2_clk)
+            if (!dut->ps2_clk)
             {
                 dut->ps2_data = (data >> j) & 1;
                 j++;
