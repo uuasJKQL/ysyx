@@ -62,17 +62,23 @@ int main(int argc, char **argv)
     uint8_t data = break_prefix;
     for (int i = 0; i < 8; ++i)
     {
-        dut->clk = 0;
-        dut->ps2_clk = 0;
-        dut->ps2_data = (data >> i) & 1;
+
+        // dut->ps2_data = (data >> i) & 1;
+        dut->ps2_clk = 0; // PS/2 起始位低电平
         dut->eval();
         tfp->dump(time);
-        time += 5;
-        dut->clk = 1;
-        dut->ps2_clk = 1;
+        time += PS2_CLK_HALF_PERIOD; // 保持低电平 10 单位
+
+        dut->ps2_clk = 1; // PS/2 高电平
         dut->eval();
         tfp->dump(time);
-        time += 5;
+        time += PS2_CLK_HALF_PERIOD; // 保持高电平 10 单位
+
+        // 主时钟自动周期（10 单位周期）
+        dut->clk = !dut->clk; // 每次翻转主时钟
+        dut->eval();
+        tfp->dump(time);
+        time += MAIN_CLK_HALF_PERIOD; // 主时钟半周期 5 单位
     }
 
     // ... 类似地完成完整的数据传输 ...
