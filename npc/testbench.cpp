@@ -68,7 +68,7 @@ int main(int argc, char **argv)
             dut->ps2_clk = !dut->ps2_clk;
         }
 
-        count++ dut->clk = !dut->clk;
+        dut->clk = !dut->clk;
         time += 5;
         count += 1;
         //   dut->ps2_data = (data >> i) & 1;
