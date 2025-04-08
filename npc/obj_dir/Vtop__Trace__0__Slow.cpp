@@ -30,7 +30,6 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->declBit(c+26,"Ready", false,-1);
     tracep->declBus(c+1,"Data", false,-1, 7,0);
     tracep->declBit(c+2,"Overflow", false,-1);
-    tracep->declBus(c+27,"dataline", false,-1, 23,0);
     tracep->pushNamePrefix("controller ");
     tracep->declBit(c+19,"clk", false,-1);
     tracep->declBit(c+20,"clrn", false,-1);
@@ -127,5 +126,4 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
     bufp->fullCData(oldp+24,(vlSelf->HEX0),7);
     bufp->fullCData(oldp+25,(vlSelf->HEX1),7);
     bufp->fullBit(oldp+26,(vlSelf->Ready));
-    bufp->fullIData(oldp+27,(vlSelf->top__DOT__dataline),24);
 }
