@@ -6,7 +6,7 @@
 const int MAIN_CLK_HALF_PERIOD = 5;
 
 // PS/2 时钟周期：20 个单位时间（高电平 10，低电平 10）
-const int PS2_CLK_HALF_PERIOD = 10;
+const int PS2_CLK_HALF_PERIOD = 50;
 int main(int argc, char **argv)
 {
     Verilated::commandArgs(argc, argv);
