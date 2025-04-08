@@ -59,7 +59,7 @@ int main(int argc, char **argv)
     // 数据位（BREAK_PREFIX 0xF0）
     int count = 0;
     uint8_t data = break_prefix;
-    for (int i = 0; i < 400; ++i)
+    for (int i = 0; i < 4000; ++i)
     {
 
         if (count == 50)
