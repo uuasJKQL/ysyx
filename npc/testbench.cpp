@@ -66,11 +66,15 @@ int main(int argc, char **argv)
         {
             count = 0;
             dut->ps2_clk = !dut->ps2_clk;
+            dut->eval();
+            tfp->dump(time);
         }
 
         dut->clk = !dut->clk;
         time += 5;
         count += 1;
+        dut->eval();
+        tfp->dump(time);
         //   dut->ps2_data = (data >> i) & 1;
     }
 
