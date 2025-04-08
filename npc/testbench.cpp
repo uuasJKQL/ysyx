@@ -108,7 +108,7 @@ int main(int argc, char **argv)
         {
             dut->clk = !dut->clk;
             dut->eval();
-            tfp->dump(10 * rep + i * 10 + 1000);
+            tfp->dump(1000 * rep + i * 10 + 1000);
         }
     }
 
