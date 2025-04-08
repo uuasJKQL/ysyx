@@ -45,13 +45,13 @@ void Vtop___024root__trace_chg_sub_0(Vtop___024root* vlSelf, VerilatedVcd::Buffe
                                          >> 4U))),4);
     }
     bufp->chgBit(oldp+18,(vlSelf->clk));
-    bufp->chgBit(oldp+19,(vlSelf->clrn));
-    bufp->chgBit(oldp+20,(vlSelf->ps2_clk));
-    bufp->chgBit(oldp+21,(vlSelf->ps2_data));
-    bufp->chgBit(oldp+22,(vlSelf->nextdata));
-    bufp->chgCData(oldp+23,(vlSelf->HEX0),7);
-    bufp->chgCData(oldp+24,(vlSelf->HEX1),7);
-    bufp->chgBit(oldp+25,(vlSelf->Ready));
+    bufp->chgBit(oldp+19,(vlSelf->ps2_clk));
+    bufp->chgBit(oldp+20,(vlSelf->ps2_data));
+    bufp->chgBit(oldp+21,(vlSelf->nextdata));
+    bufp->chgCData(oldp+22,(vlSelf->HEX0),7);
+    bufp->chgCData(oldp+23,(vlSelf->HEX1),7);
+    bufp->chgBit(oldp+24,(vlSelf->Ready));
+    bufp->chgBit(oldp+25,(vlSelf->clrn));
 }
 
 void Vtop___024root__trace_cleanup(void* voidSelf, VerilatedVcd* /*unused*/) {

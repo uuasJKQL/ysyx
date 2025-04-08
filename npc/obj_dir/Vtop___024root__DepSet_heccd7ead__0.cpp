@@ -204,8 +204,6 @@ void Vtop___024root___eval_debug_assertions(Vtop___024root* vlSelf) {
     // Body
     if (VL_UNLIKELY((vlSelf->clk & 0xfeU))) {
         Verilated::overWidthError("clk");}
-    if (VL_UNLIKELY((vlSelf->clrn & 0xfeU))) {
-        Verilated::overWidthError("clrn");}
     if (VL_UNLIKELY((vlSelf->ps2_clk & 0xfeU))) {
         Verilated::overWidthError("ps2_clk");}
     if (VL_UNLIKELY((vlSelf->ps2_data & 0xfeU))) {

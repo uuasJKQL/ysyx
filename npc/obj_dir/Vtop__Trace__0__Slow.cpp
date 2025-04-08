@@ -12,32 +12,32 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     const int c = vlSymsp->__Vm_baseCode;
     // Body
     tracep->declBit(c+19,"clk", false,-1);
-    tracep->declBit(c+20,"clrn", false,-1);
-    tracep->declBit(c+21,"ps2_clk", false,-1);
-    tracep->declBit(c+22,"ps2_data", false,-1);
-    tracep->declBit(c+23,"nextdata", false,-1);
-    tracep->declBus(c+24,"HEX0", false,-1, 6,0);
-    tracep->declBus(c+25,"HEX1", false,-1, 6,0);
-    tracep->declBit(c+26,"Ready", false,-1);
+    tracep->declBit(c+20,"ps2_clk", false,-1);
+    tracep->declBit(c+21,"ps2_data", false,-1);
+    tracep->declBit(c+22,"nextdata", false,-1);
+    tracep->declBus(c+23,"HEX0", false,-1, 6,0);
+    tracep->declBus(c+24,"HEX1", false,-1, 6,0);
+    tracep->declBit(c+25,"Ready", false,-1);
+    tracep->declBit(c+26,"clrn", false,-1);
     tracep->pushNamePrefix("top ");
     tracep->declBit(c+19,"clk", false,-1);
-    tracep->declBit(c+20,"clrn", false,-1);
-    tracep->declBit(c+21,"ps2_clk", false,-1);
-    tracep->declBit(c+22,"ps2_data", false,-1);
-    tracep->declBit(c+23,"nextdata", false,-1);
-    tracep->declBus(c+24,"HEX0", false,-1, 6,0);
-    tracep->declBus(c+25,"HEX1", false,-1, 6,0);
-    tracep->declBit(c+26,"Ready", false,-1);
+    tracep->declBit(c+20,"ps2_clk", false,-1);
+    tracep->declBit(c+21,"ps2_data", false,-1);
+    tracep->declBit(c+22,"nextdata", false,-1);
+    tracep->declBus(c+23,"HEX0", false,-1, 6,0);
+    tracep->declBus(c+24,"HEX1", false,-1, 6,0);
+    tracep->declBit(c+25,"Ready", false,-1);
+    tracep->declBit(c+26,"clrn", false,-1);
     tracep->declBus(c+1,"Data", false,-1, 7,0);
     tracep->declBit(c+2,"Overflow", false,-1);
     tracep->pushNamePrefix("controller ");
     tracep->declBit(c+19,"clk", false,-1);
-    tracep->declBit(c+20,"clrn", false,-1);
-    tracep->declBit(c+21,"ps2_clk", false,-1);
-    tracep->declBit(c+22,"ps2_data", false,-1);
-    tracep->declBit(c+23,"nextdata_n", false,-1);
+    tracep->declBit(c+26,"clrn", false,-1);
+    tracep->declBit(c+20,"ps2_clk", false,-1);
+    tracep->declBit(c+21,"ps2_data", false,-1);
+    tracep->declBit(c+22,"nextdata_n", false,-1);
     tracep->declBus(c+1,"data", false,-1, 7,0);
-    tracep->declBit(c+26,"ready", false,-1);
+    tracep->declBit(c+25,"ready", false,-1);
     tracep->declBit(c+2,"overflow", false,-1);
     tracep->declBus(c+3,"buffer", false,-1, 9,0);
     for (int i = 0; i < 8; ++i) {
@@ -51,11 +51,11 @@ VL_ATTR_COLD void Vtop___024root__trace_init_sub__TOP__0(Vtop___024root* vlSelf,
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("sega ");
     tracep->declBus(c+17,"data", false,-1, 3,0);
-    tracep->declBus(c+24,"seg", false,-1, 6,0);
+    tracep->declBus(c+23,"seg", false,-1, 6,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("segb ");
     tracep->declBus(c+18,"data", false,-1, 3,0);
-    tracep->declBus(c+25,"seg", false,-1, 6,0);
+    tracep->declBus(c+24,"seg", false,-1, 6,0);
     tracep->popNamePrefix(2);
 }
 
@@ -119,11 +119,11 @@ VL_ATTR_COLD void Vtop___024root__trace_full_sub_0(Vtop___024root* vlSelf, Veril
     bufp->fullCData(oldp+18,((0xfU & ((IData)(vlSelf->top__DOT__Data) 
                                       >> 4U))),4);
     bufp->fullBit(oldp+19,(vlSelf->clk));
-    bufp->fullBit(oldp+20,(vlSelf->clrn));
-    bufp->fullBit(oldp+21,(vlSelf->ps2_clk));
-    bufp->fullBit(oldp+22,(vlSelf->ps2_data));
-    bufp->fullBit(oldp+23,(vlSelf->nextdata));
-    bufp->fullCData(oldp+24,(vlSelf->HEX0),7);
-    bufp->fullCData(oldp+25,(vlSelf->HEX1),7);
-    bufp->fullBit(oldp+26,(vlSelf->Ready));
+    bufp->fullBit(oldp+20,(vlSelf->ps2_clk));
+    bufp->fullBit(oldp+21,(vlSelf->ps2_data));
+    bufp->fullBit(oldp+22,(vlSelf->nextdata));
+    bufp->fullCData(oldp+23,(vlSelf->HEX0),7);
+    bufp->fullCData(oldp+24,(vlSelf->HEX1),7);
+    bufp->fullBit(oldp+25,(vlSelf->Ready));
+    bufp->fullBit(oldp+26,(vlSelf->clrn));
 }

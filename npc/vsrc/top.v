@@ -1,14 +1,13 @@
 module top (
     input clk,
 
-
+    input            clrn,
     input            ps2_clk,
     input            ps2_data,
     output reg       nextdata,
     output reg [6:0] HEX0,
     output reg [6:0] HEX1,
-    output Ready,
-    output reg clrn
+    output Ready
     // output reg [6:0] HEX2,
     // output reg [6:0] HEX3,
     // output reg [6:0] HEX4,
