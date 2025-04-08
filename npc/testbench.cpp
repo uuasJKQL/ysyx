@@ -57,14 +57,17 @@ int main(int argc, char **argv)
     time += 5;
 
     // 数据位（BREAK_PREFIX 0xF0）
+    int count = 0;
     uint8_t data = break_prefix;
     for (int i = 0; i < 400; ++i)
     {
+
         if (count == 50)
         {
+            count = 0;
             dut->ps2_clk = !dut->ps2_clk;
         }
-        int count = 0;
+
         count++ dut->clk = !dut->clk;
         time += 5;
         count += 1;
