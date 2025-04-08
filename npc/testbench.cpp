@@ -38,13 +38,18 @@ int main(int argc, char **argv)
 
     // 发送按键按下
     // 发送BREAK前缀
-    dut->ps2_data = 0; // 起始位
+    dut->clk = 0;
+    dut->ps2_clk = 0; // 起始位
+    dut->eval();
     tfp->dump(time);
     time += 5;
-    dut->ps2_clk = 0;
+    dut->ps2_data = 0;
+    dut->eval();
     tfp->dump(time);
     time += 5;
+    dut->clk = 0;
     dut->ps2_clk = 1;
+    dut->eval();
     tfp->dump(time);
     time += 5;
 
@@ -52,11 +57,13 @@ int main(int argc, char **argv)
     uint8_t data = break_prefix;
     for (int i = 0; i < 8; ++i)
     {
-        dut->ps2_data = (data >> i) & 1;
+        dut->clk = 0;
         dut->ps2_clk = 0;
+        dut->ps2_data = (data >> i) & 1;
         dut->eval();
         tfp->dump(time);
         time += 5;
+        dut->clk = 0;
         dut->ps2_clk = 1;
         dut->eval();
         tfp->dump(time);
