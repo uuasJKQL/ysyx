@@ -58,19 +58,17 @@ int main(int argc, char **argv)
 
     // 数据位（BREAK_PREFIX 0xF0）
     uint8_t data = break_prefix;
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < 400; ++i)
     {
-        dut->clk = 0;
-        dut->ps2_clk = 0;
-        dut->ps2_data = (data >> i) & 1;
-        dut->eval();
-        tfp->dump(time);
+        if (count == 50)
+        {
+            dut->ps2_clk = !dut->ps2_clk;
+        }
+        int count = 0;
+        count++ dut->clk = !dut->clk;
         time += 5;
-        dut->clk = 1;
-        dut->ps2_clk = 1;
-        dut->eval();
-        tfp->dump(time);
-        time += 5;
+        count += 1;
+        //   dut->ps2_data = (data >> i) & 1;
     }
 
     // ... 类似地完成完整的数据传输 ...
