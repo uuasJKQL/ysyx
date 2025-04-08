@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     dut->eval();
     tfp->dump(time);
     time += 5;
-    dut->clk = 0;
+    dut->clk = 1;
     dut->ps2_clk = 1;
     dut->eval();
     tfp->dump(time);
