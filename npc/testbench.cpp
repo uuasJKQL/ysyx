@@ -39,8 +39,9 @@ int main(int argc, char **argv)
     // 发送按键按下
     // 发送BREAK前缀
     dut->clk = 0;
-    dut->ps2_clk = 0; // 起始位
     dut->eval();
+    dut->ps2_clk = 0; // 起始位
+
     tfp->dump(time);
     time += 5;
     dut->ps2_data = 0;
