@@ -20,8 +20,8 @@ class Vtop___024root final : public VerilatedModule {
     VL_OUT8(nextdata,0,0);
     VL_OUT8(HEX0,6,0);
     VL_OUT8(HEX1,6,0);
+    VL_OUT8(Ready,0,0);
     CData/*7:0*/ top__DOT__Data;
-    CData/*0:0*/ top__DOT__Ready;
     CData/*0:0*/ top__DOT__Overflow;
     CData/*2:0*/ top__DOT__controller__DOT__w_ptr;
     CData/*2:0*/ top__DOT__controller__DOT__r_ptr;
@@ -31,6 +31,7 @@ class Vtop___024root final : public VerilatedModule {
     CData/*0:0*/ __Vtrigrprev__TOP__clk;
     CData/*0:0*/ __VactContinue;
     SData/*9:0*/ top__DOT__controller__DOT__buffer;
+    IData/*23:0*/ top__DOT__dataline;
     IData/*31:0*/ __VstlIterCount;
     IData/*31:0*/ __VactIterCount;
     VlUnpacked<CData/*7:0*/, 8> top__DOT__controller__DOT__fifo;

@@ -151,9 +151,10 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->nextdata = VL_RAND_RESET_I(1);
     vlSelf->HEX0 = VL_RAND_RESET_I(7);
     vlSelf->HEX1 = VL_RAND_RESET_I(7);
+    vlSelf->Ready = VL_RAND_RESET_I(1);
     vlSelf->top__DOT__Data = VL_RAND_RESET_I(8);
-    vlSelf->top__DOT__Ready = VL_RAND_RESET_I(1);
     vlSelf->top__DOT__Overflow = VL_RAND_RESET_I(1);
+    vlSelf->top__DOT__dataline = VL_RAND_RESET_I(24);
     vlSelf->top__DOT__controller__DOT__buffer = VL_RAND_RESET_I(10);
     for (int __Vi0 = 0; __Vi0 < 8; ++__Vi0) {
         vlSelf->top__DOT__controller__DOT__fifo[__Vi0] = VL_RAND_RESET_I(8);

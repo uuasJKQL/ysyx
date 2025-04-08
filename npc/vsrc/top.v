@@ -16,7 +16,7 @@ module top (
     wire [7:0] Data;
 
     wire       Overflow;
-    reg [23:0] dataline;
+
     segment sega (
         .data(Data[3:0]),
         .seg (HEX0)
@@ -37,7 +37,7 @@ module top (
 
     );
     always @(posedge clk) begin
-
+if(!Overflow)
         nextdata <= 0;
 
     end
