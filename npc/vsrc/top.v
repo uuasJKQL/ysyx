@@ -6,15 +6,17 @@ module top (
     input            ps2_data,
     output reg       nextdata,
     output reg [6:0] HEX0,
-    output reg [6:0] HEX1
+    output reg [6:0] HEX1,
+    output Ready
     // output reg [6:0] HEX2,
     // output reg [6:0] HEX3,
     // output reg [6:0] HEX4,
     // output reg [6:0] HEX5
 );
     wire [7:0] Data;
-    wire       Ready;
+
     wire       Overflow;
+    reg [23:0] dataline;
     segment sega (
         .data(Data[3:0]),
         .seg (HEX0)
@@ -36,7 +38,7 @@ module top (
     );
     always @(posedge clk) begin
 
-        if (Ready&~Overflow) nextdata <= 0;
+        nextdata <= 0;
 
     end
 endmodule
