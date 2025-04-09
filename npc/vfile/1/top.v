@@ -8,7 +8,7 @@ module top (
     output reg [6:0] HEX0,
     output reg [6:0] HEX1,
     output reg  en,
-
+    output show2,
     output           Ready,
     output reg [6:0] HEX2,
     output reg [6:0] HEX3,
@@ -23,7 +23,8 @@ module top (
     wire       Overflow;
     reg  [7:0] count;
 wire [3:0]show;
-
+wire show3;
+assign show2=show3;
   initial begin
    //HEX4=7'b1111111;
     HEX5=7'b1111111;
@@ -69,7 +70,9 @@ wire [3:0]show;
         .data      (Data),
         .ready     (Ready),
         .nextdata_n(nextdata),
-        .overflow  (Overflow)
+        .overflow  (Overflow),
+    .count(show),
+    .sampling(show3)
     );
 
     always @(posedge clk) begin

@@ -6,16 +6,20 @@ module ps2_keyboard (
     data,
     ready,
     nextdata_n,
-    overflow
+    overflow,
+  
+    w_ptr
+
 );
     input clk, clrn, ps2_clk, ps2_data;
     input nextdata_n;
-output reg overflow;
+
     output [7:0] data;
     output reg ready;
+    output reg overflow;  // fifo overflow
    reg [3:0] count;  // count ps2_data bits
-  wire  sampling;
-    reg [2:0] w_ptr;
+wire  sampling;
+   output reg [2:0] w_ptr;
     reg [2:0] r_ptr;  // fifo write and read pointers
     // internal signal, for test
     reg [9:0] buffer;  // ps2_data bits
@@ -68,3 +72,4 @@ output reg overflow;
     assign data = fifo[r_ptr-1];  //always set output data
 
 endmodule
+
