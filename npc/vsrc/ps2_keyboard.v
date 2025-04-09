@@ -6,17 +6,21 @@ module ps2_keyboard (
     data,
     ready,
     nextdata_n,
-    overflow
+    overflow,
+    w_ptr,
+    r_ptr
 );
     input clk, clrn, ps2_clk, ps2_data;
     input nextdata_n;
     output [7:0] data;
     output reg ready;
     output reg overflow;  // fifo overflow
+    output reg [2:0] w_ptr;
+    output reg [2:0] r_ptr;  // fifo write and read pointers
     // internal signal, for test
     reg [9:0] buffer;  // ps2_data bits
     reg [7:0] fifo                     [7:0];  // data fifo
-    reg [2:0] w_ptr, r_ptr;  // fifo write and read pointers
+  
     reg [3:0] count;  // count ps2_data bits
     // detect falling edge of ps2_clk
     reg [2:0] ps2_clk_sync;
@@ -39,7 +43,7 @@ module ps2_keyboard (
                 if(nextdata_n == 1'b0) //read next data
                 begin
                     r_ptr <= r_ptr + 3'b1;
-                    if (w_ptr == (r_ptr + 1'b1))  //empty
+                    if (w_ptr == (r_ptr + 2'b10))  //empty
                         ready <= 1'b0;
                 end
             end
