@@ -1,8 +1,11 @@
 module segment (
     input      [3:0] data,
+    input en,
     output reg [6:0] seg
 );
     always @(*) begin
+        if(en)
+        begin
         case (data[3:0])
             4'h0: seg[6:0] = 7'b1000000;
             4'h1: seg[6:0] = 7'b1111001;
@@ -21,5 +24,8 @@ module segment (
             4'he: seg[6:0] = 7'b0000110;
             4'hf: seg[6:0] = 7'b0001110;
         endcase
+        end
+        else
+        seg[6:0]=7'b1111111;
     end
 endmodule
