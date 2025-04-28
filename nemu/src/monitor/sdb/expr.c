@@ -20,6 +20,7 @@
  */
 #include <regex.h>
 #include <ctype.h>
+#include <memory/vaddr.h>
 const char *reg_name[] =
     {
         "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -29,14 +30,15 @@ const char *reg_name[] =
 enum
 {
   TK_NOTYPE = 256,
-  TK_EQ,
+
   TK_number,
   TK_U,
+  TK_EQ,
   TK_NEQ,
   TK_AND,
   TK_REG,
   TK_HEX,
-  TK_P
+  TK_DEREF
 
   /* TODO: Add more token types */
 
@@ -67,7 +69,7 @@ static struct rule
     {"\\*", '*'},
     {"/", '/'},
     {"u", TK_U}};
-
+// 42,43,45,47,259-261
 #define NR_REGEX ARRLEN(rules)
 
 static regex_t re[NR_REGEX] = {};
@@ -102,6 +104,39 @@ typedef struct token
 
 static Token tokens[65536] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
+void find_main_op(int a, int b, int p, int q, int *op_type, int *op_p, bool *op_f)
+{
+  for (int i = q; i >= p; i--)
+  {
+    bool op_true = 1;
+    if (tokens[i].type == a || tokens[i].type == b)
+    {
+      int pare_sum = 0;
+      for (int j = 1; j <= i - p; j++)
+      {
+        if (tokens[i - j].type == ')')
+        {
+          pare_sum--;
+        }
+        else if (tokens[i - j].type == '(')
+        {
+          pare_sum++;
+        }
+      }
+      if (pare_sum > 0)
+      {
+        op_true = 0;
+      }
+      if (op_true)
+      {
+        *op_f = 1;
+        *op_type = tokens[i].type;
+        *op_p = i;
+        break;
+      }
+    }
+  }
+}
 bool check_parentheses(int p, int q)
 {
   bool parentheses = 0;
@@ -176,7 +211,7 @@ static bool make_token(char *e)
           nr_token--;
           break;
         case TK_EQ:
-          tokens[nr_token].type = TK_number;
+          tokens[nr_token].type = TK_EQ;
           strcpy(tokens[nr_token].str, "==");
           break;
         case TK_number:
@@ -306,72 +341,15 @@ uint32_t eval(int p, int q)
 
   else
   {
-    for (int i = q; i >= p; i--)
-    {
-      bool op_true = 1;
-      if (tokens[i].type == '+' || tokens[i].type == '-')
-      {
-        int pare_sum = 0;
-        for (int j = 1; j <= i - p; j++)
-        {
-          if (tokens[i - j].type == ')')
-          {
-            pare_sum--;
-          }
-          else if (tokens[i - j].type == '(')
-          {
-            pare_sum++;
-          }
-        }
-        if (pare_sum > 0)
-        {
-          op_true = 0;
-        }
-        if (op_true)
-        {
-          op_f = 1;
-          op_type = tokens[i].type;
-          op_p = i;
-          break;
-        }
-      }
-    }
-
+    find_main_op(TK_AND, TK_AND, p, q, &op_type, &op_p, &op_f);
     if (!op_f)
-    {
-      for (int i = q; i >= p; i--)
-      {
-        bool op_true = 1;
-        if (tokens[i].type == '*' || tokens[i].type == '/')
-        {
-          int pare_sum = 0;
-          for (int j = 1; j <= i - p; j++)
-          {
-            if (tokens[i - j].type == ')')
-            {
-              pare_sum--;
-            }
-            else if (tokens[i - j].type == '(')
-            {
-              pare_sum++;
-            }
-          }
-          if (pare_sum > 0)
-          {
-            op_true = 0;
-          }
-
-          if (op_true)
-          {
-            op_f = 1;
-            op_type = tokens[i].type;
-            op_p = i;
-            break;
-          }
-        }
-      }
-    }
-
+      find_main_op(TK_EQ, TK_NEQ, p, q, &op_type, &op_p, &op_f);
+    if (!op_f)
+      find_main_op('+', '-', p, q, &op_type, &op_p, &op_f);
+    if (!op_f)
+      find_main_op('*', '/', p, q, &op_type, &op_p, &op_f);
+    if (!op_f)
+      find_main_op(TK_DEREF, TK_DEREF, p, q, &op_type, &op_p, &op_f);
     printf("op position and optype:%d and %d\n", op_p, op_type);
     uint32_t val1 = eval(p, op_p - 1);
     uint32_t val2 = eval(op_p + 1, q);
@@ -386,6 +364,14 @@ uint32_t eval(int p, int q)
       return val1 * val2; /* ... */
     case '/':
       return val1 / val2; /* ... */
+    case TK_AND:
+      return val1 && val2;
+    case TK_NEQ:
+      return val1 != val2;
+    case TK_EQ:
+      return val1 == val2;
+    case TK_DEREF:
+      return vaddr_read(val2, 4);
     default:
       assert(0);
     }
@@ -394,7 +380,7 @@ uint32_t eval(int p, int q)
 
 word_t expr(char *e, bool *success)
 {
-  //  printf("%s\n",e);
+  printf("%s\n", e);
   if (!make_token(e))
   {
     *success = false;
@@ -403,6 +389,13 @@ word_t expr(char *e, bool *success)
 
   /* TODO: Insert codes to evaluate the expression. */
   // printf("result:%d\n",eval(0,nr_token-1));
+  for (int i = 0; i < nr_token; i++)
+  {
+    if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type <= 47 && tokens[i - 1].type >= 43) || (tokens[i - 1].type >= 259 && tokens[i - 1].type <= 261)))
+    {
+      tokens[i].type = TK_DEREF;
+    }
+  }
 
   return eval(0, nr_token - 1);
 }
