@@ -74,6 +74,24 @@ static int cmd_info(char *args)
   {
     isa_reg_display();
   }
+  if (!strcmp(args, "w"))
+  {
+    WP *current = head_wp();
+    for (int i = 0; i < 31; i++)
+    {
+
+      printf("num:%d   address:%s\n", current->NO, current->expr);
+      if (current->next == NULL)
+      {
+        break;
+      }
+      else
+      {
+        current = current->next;
+      }
+    }
+  }
+
   return 0;
 }
 
@@ -96,6 +114,20 @@ static int cmd_x(char *args)
   }
   return 0;
 }
+static int cmd_w(char *args)
+{
+  WP *wp = new_wp();
+  assert(wp != NULL);
+  strcpy(wp->expr, args);
+  printf("watchpoint %d:%s\n", wp->NO, wp->expr);
+  return 0;
+}
+static int cmd_d(char *args)
+{
+  free_wp(atoi(args));
+  printf(" delete watchpoint %d\n", atoi(args));
+  return 0;
+}
 static int cmd_help(char *args);
 
 static struct
@@ -109,7 +141,9 @@ static struct
     {"q", "Exit NEMU", cmd_q},
     {"si", "singal step", cmd_si},
     {"info", "show rgister or monitor", cmd_info},
-    {"x", "Scan memory", cmd_x}
+    {"x", "Scan memory", cmd_x},
+    {"w", "watchpoints", cmd_w},
+    {"d", "delete watchpoints", cmd_d}
     /* TODO: Add more commands */
 
 };

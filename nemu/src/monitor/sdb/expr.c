@@ -351,7 +351,11 @@ uint32_t eval(int p, int q)
     if (!op_f)
       find_main_op(TK_DEREF, TK_DEREF, p, q, &op_type, &op_p, &op_f);
     printf("op position and optype:%d and %d\n", op_p, op_type);
-    uint32_t val1 = eval(p, op_p - 1);
+    uint32_t val1 = 0;
+    if (op_type != TK_DEREF)
+    {
+      val1 = eval(p, op_p - 1);
+    }
     uint32_t val2 = eval(op_p + 1, q);
 
     switch (op_type)
