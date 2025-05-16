@@ -26,7 +26,7 @@ const char *reg_name[] =
         "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
         "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
         "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
-        "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"};
+        "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6", "pc"};
 enum
 {
   TK_NOTYPE = 256,
@@ -316,12 +316,15 @@ uint32_t eval(int p, int q)
     {
       char *rn = tokens[p].str;
       rn++;
-      for (int i = 0; i < 32; i++)
+      for (int i = 0; i < 33; i++)
       {
 
-        if (strcmp(reg_name[i], rn) == 0)
+        if (strcmp(reg_name[i], rn) == 0 || strcmp("0", rn) == 0)
         {
-          return cpu.gpr[i];
+          if (strcmp("pc", rn) == 0)
+            return cpu.pc;
+          else
+            return cpu.gpr[i];
         }
       }
 
@@ -350,7 +353,7 @@ uint32_t eval(int p, int q)
       find_main_op('*', '/', p, q, &op_type, &op_p, &op_f);
     if (!op_f)
       find_main_op(TK_DEREF, TK_DEREF, p, q, &op_type, &op_p, &op_f);
-    printf("op position and optype:%d and %d\n", op_p, op_type);
+    // printf("op position and optype:%d and %d\n", op_p, op_type);
     uint32_t val1 = 0;
     if (op_type != TK_DEREF)
     {
@@ -384,7 +387,7 @@ uint32_t eval(int p, int q)
 
 word_t expr(char *e, bool *success)
 {
-  printf("%s\n", e);
+  // printf("%s\n", e);
   if (!make_token(e))
   {
     *success = false;

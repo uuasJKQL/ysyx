@@ -24,7 +24,7 @@ typedef struct watchpoint
     int NO;
     struct watchpoint *next;
     char expr[256];
-
+    uint32_t val;
 } WP;
 
 WP *new_wp();

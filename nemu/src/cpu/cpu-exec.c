@@ -29,8 +29,6 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
-int exec_num = 0;
-int wpexpr[32];
 void device_update();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
@@ -52,46 +50,28 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   {
     WP *current = wp;
 
-    if (exec_num == 1)
+    for (int i = 0; i < 31; i++)
     {
-      for (int i = 0; i < 31; i++)
+
+      bool success = 1;
+
+      if (current->val != expr(current->expr, &success))
       {
-        bool success = 1;
-        wpexpr[i] = expr(current->expr, &success);
-        if (!success)
-          assert(0);
-        if (current->next == NULL)
-        {
-          break;
-        }
-        else
-        {
-          current = current->next;
-        }
+        assert(success);
+        nemu_state.state = NEMU_STOP;
+        printf("hit watchpouint %d at %s\n", current->NO, current->expr);
+        current->val = expr(current->expr, &success);
+      }
+
+      if (current->next == NULL)
+      {
+        break;
+      }
+      else
+      {
+        current = current->next;
       }
     }
-    else
-      for (int i = 0; i < 31; i++)
-      {
-        current = wp;
-        bool success = 1;
-
-        if (wpexpr[i] != expr(current->expr, &success))
-        {
-          assert(success);
-          nemu_state.state = NEMU_STOP;
-          printf("hit watchpouint %d at %s\n", current->NO, current->expr);
-        }
-
-        if (current->next == NULL)
-        {
-          break;
-        }
-        else
-        {
-          current = current->next;
-        }
-      }
   }
 #endif
 }
@@ -133,7 +113,7 @@ static void exec_once(Decode *s, vaddr_t pc)
 
 static void execute(uint64_t n)
 {
-  exec_num++;
+
   Decode s;
   for (; n > 0; n--)
   {

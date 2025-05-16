@@ -45,6 +45,18 @@ static char *rl_gets()
 
   return line_read;
 }
+static int cmd_p(char *args)
+{
+  bool success = 1;
+  uint32_t value = expr(args, &success);
+  if (success)
+  {
+    printf("expr value:0x%08x\n", value);
+  }
+  else
+    assert(0);
+  return 0;
+}
 
 static int cmd_c(char *args)
 {
@@ -54,7 +66,7 @@ static int cmd_c(char *args)
 
 static int cmd_q(char *args)
 {
-  nemu_state.state = NEMU_QUIT;
+  nemu_state.state = NEMU_QUIT; // quit
   return -1;
 }
 static int cmd_si(char *args)
@@ -119,7 +131,11 @@ static int cmd_w(char *args)
   WP *wp = new_wp();
   assert(wp != NULL);
   strcpy(wp->expr, args);
+  bool success = 1;
+  wp->val = expr(wp->expr, &success);
+  assert(success);
   printf("watchpoint %d:%s\n", wp->NO, wp->expr);
+
   return 0;
 }
 static int cmd_d(char *args)
@@ -143,7 +159,8 @@ static struct
     {"info", "show rgister or monitor", cmd_info},
     {"x", "Scan memory", cmd_x},
     {"w", "watchpoints", cmd_w},
-    {"d", "delete watchpoints", cmd_d}
+    {"d", "delete watchpoints", cmd_d},
+    {"p", "expr ", cmd_p}
     /* TODO: Add more commands */
 
 };
