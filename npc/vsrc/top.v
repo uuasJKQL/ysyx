@@ -9,7 +9,7 @@ module top (
     output reg [6:0] HEX1,
 
 
-    output reg       en,
+    output        en,
     output           Ready,
     output reg [6:0] HEX2,
     output reg [6:0] HEX3,
@@ -18,19 +18,21 @@ module top (
     output reg [6:0] HEX6,
     output reg [6:0] HEX7
 );
-
-    reg  [3:0] count2;
+parameter wait_data =0 ;
+parameter show_data =1 ;
+ wire change;
     wire [7:0] Data;
     reg  [7:0] RData;
     wire [7:0] ascii;
     wire       Overflow;
-    reg  [7:0] count;
-    reg  [2:0] show;
-    reg  [5:0] show2;
-
+reg current_state;
+reg next_state;
+reg [7:0]count;
+reg [3:0]count2;
     initial begin
         HEX4 = 7'b1111111;
         HEX5 = 7'b1111111;
+       next_state=1;
     end
 
     ROM rom (
@@ -76,30 +78,29 @@ module top (
         .data      (Data),
         .ready     (Ready),
         .nextdata_n(nextdata),
-        .overflow  (Overflow)
-
+        .overflow  (Overflow),
+.count(count2)
     );
     //assign en=(is_work[1]^is_work[0]);
+always @(*) begin
+    case (current_state)
+       wait_data : if(Ready)next_state=show_data;
+      show_data : if(Data == 8'hF0)next_state=wait_data  ;
+      endcase
+end
+assign change=(current_state==show_data)&&(next_state==wait_data);
+always @(posedge Ready) begin
+      RData<=Data;
+end
+always @(posedge ps2_clk) begin
+    
+    current_state<=next_state;
+    if(change)
+    count<=count+1;
+end
 
-    always @(posedge ps2_clk) begin
-        count2 <= count2 + 1;
-        if (count2 == 10) begin
-            en <= 1;
-        end
+    assign en=current_state;
 
-        nextdata <= 0;
-        RData <= Data;
-
-        if (Data == 8'hF0 && RData != 8'hF0) begin
-            en <= 0;
-            count2 <= 0;
-            count <= count + 1;
-        end
-
-
-
-
-    end
 
 
 
