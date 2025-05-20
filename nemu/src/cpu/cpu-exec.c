@@ -58,7 +58,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
       if (current->val != expr(current->expr, &success))
       {
         assert(success);
-        nemu_state.state = NEMU_STOP;
+        if (nemu_state.state == NEMU_RUNNING)
+          nemu_state.state = NEMU_STOP;
         printf("hit watchpouint %d at %s\n", current->NO, current->expr);
         current->val = expr(current->expr, &success);
       }
