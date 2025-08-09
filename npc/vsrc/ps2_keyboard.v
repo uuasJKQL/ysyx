@@ -10,7 +10,7 @@ module ps2_keyboard(clk,clrn,ps2_clk,ps2_data,data,
     reg [9:0] buffer;        // ps2_data bits
     reg [7:0] fifo[7:0];     // data fifo
     reg [2:0] w_ptr,r_ptr;   // fifo write and read pointers
- // output  reg [3:0] count;  // count ps2_data bits
+ // output  reg [3:0] count;  // count ps2_data bits   
     // detect falling edge of ps2_clk
     reg [2:0] ps2_clk_sync;
 

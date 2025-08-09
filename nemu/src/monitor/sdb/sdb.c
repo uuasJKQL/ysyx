@@ -112,14 +112,11 @@ static int cmd_x(char *args)
   char *Nbyte = strtok(args, " ");
   char *point = Nbyte + strlen(Nbyte) + 3;
   int N = atoi(Nbyte);
-  int k = strlen(point);
-  int p = atoi(point);
+
   int sum = 0;
-  for (int j = 0; j < k; j++)
-  {
-    sum += p % 10 * 16 * pow(16, j);
-    p /= 10;
-  }
+  char *end_ptr;
+  sum = strtol(point, &end_ptr, 16);
+
   for (int i = 0; i < N; i++)
   {
     printf("0x%08x \n", vaddr_read(sum + 4 * i, 4));
