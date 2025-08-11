@@ -2,10 +2,10 @@
 VERILATOR_FLAGS = -Wall --trace --cc --exe --build
 VERILATOR_SOURCES = $(shell find $(abspath ./vsrc) -name "*.v") # 替换为所有Verilog文件
 TESTBENCH = testbench.cpp  # 测试台代码
-SIM_EXE = obj_dir/Vtop     # Verilator生成的可执行文件路径
+SIM_EXE = obj_dir/Vysyx_25050147_top     # Verilator生成的可执行文件路径
 
 VERILATOR = verilator
-TOPNAME = top
+TOPNAME = ysyx_25050147_top
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 VERILATOR_CFLAGS += -MMD --build --trace -cc  \
@@ -57,7 +57,11 @@ all:
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."
-	$(VERILATOR) $(VERILATOR_FLAGS) $(TESTBENCH) $(VERILATOR_SOURCES)
+	$(VERILATOR) $(VERILATOR_FLAGS) \
+		--top-module $(TOPNAME) \
+		-CFLAGS "-DTOP_NAME=V$(TOPNAME)" \
+		$(TESTBENCH) $(VSRCS)
+
 	@echo "=============================================="
 	@echo "Simulation started"
 	@echo "=============================================="

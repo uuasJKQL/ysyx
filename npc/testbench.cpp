@@ -1,91 +1,69 @@
+#include <stdio.h>
 #include <stdlib.h>
-#include <verilated.h>
-#include <verilated_vcd_c.h>
-#include "Vtop.h"
-
-int main(int argc, char **argv)
+#include <assert.h>
+#include "Vysyx_25050147_top.h" // Verilator生成的头文件
+#include "verilated.h"          // Verilator核心头文件
+#include "verilated_vcd_c.h"
+#include "Vysyx_25050147_top__Dpi.h"
+static Vysyx_25050147_top *ysyx_25050147_top;
+vluint64_t sim_time = 0; // 用于计数时钟边沿
+int inst[20] = {
+    0x00500093, // addi x1, x0, 5   (机器码: 0x00500093)
+    0x00700113, // addi x2, x0, 7   (机器码: 0x00700113)
+    0x00508113, // addi  x2, x1,5  (机器码: 0x002081b3)
+};
+void single_cycle()
 {
-    Verilated::commandArgs(argc, argv);
-    Vtop *dut = new Vtop;
-
-    // 波形初始化
-    Verilated::traceEverOn(true);
-    VerilatedVcdC *tfp = new VerilatedVcdC;
-    dut->trace(tfp, 99);
-    tfp->open("wave.vcd");
-
-    // 基础信号初始化
-    vluint64_t time = 0;
-    dut->clk = 0;
-    dut->clrn = 0;
-    dut->ps2_clk = 1;
-    dut->ps2_data = 1;
-    //  dut->nextdata = 1;
-
-    // 复位序列 (10个时钟周期)
-    for (int i = 0; i < 10; ++i)
-    {
-        dut->clk = !dut->clk;
-        dut->eval();
-        tfp->dump(time);
-        time += 10;
-    }
-    dut->clrn = 1;
-
-    // 模拟发送Q键扫描码
-    const uint8_t make_code = 0x15;
-    const uint8_t break_prefix = 0xF0;
-
-    // 发送按键按下
-    // 发送BREAK前缀
-    // dut->clk = 0;
-
-    // dut->eval();
-    // dut->ps2_clk = 0; // 起始位
-
-    // tfp->dump(time);
-    // time += 5;
-    // dut->ps2_data = 0;
-    // dut->eval();
-    // tfp->dump(time);
-    // time += 5;
-    // dut->clk = 1;
-    // time += 1;
-    // dut->ps2_clk = 1;
-    // dut->eval();
-    // tfp->dump(time);
-    // time += 5;
-
-    // 数据位（BREAK_PREFIX 0xF0）
-    int count = 0;
-    uint8_t data = break_prefix;
-    int j = 0;
-    for (int i = 0; i < 4000; ++i)
-    {
-
-        if (count == 50)
-        {
-
-            count = 0;
-            dut->ps2_clk = !dut->ps2_clk;
-            if (!dut->ps2_clk)
-            {
-                dut->ps2_data = (data >> j) & 1;
-                j++;
-            }
-        }
-
-        dut->clk = !dut->clk;
-        time += 5;
-        count += 1;
-        dut->eval();
-        tfp->dump(time);
-    }
-
-    // ... 类似地完成完整的数据传输 ...
-
-    // 清理
-    tfp->close();
-    delete dut;
-    return 0;
+  ysyx_25050147_top->clk = 0;
+  ysyx_25050147_top->eval();
+  ysyx_25050147_top->clk = 1;
+  ysyx_25050147_top->eval();
 }
+void reset(int n)
+{
+  ysyx_25050147_top->rst = 1;
+  while (n-- > 0)
+    single_cycle();
+  ysyx_25050147_top->rst = 0;
+}
+int pmem_read(int n)
+{
+  return inst[(n - 0x80000000) / 4];
+}
+int main()
+{
+  ysyx_25050147_top = new Vysyx_25050147_top; // 必须创建实例!
+  Verilated::traceEverOn(true);
+  VerilatedVcdC *m_trace = new VerilatedVcdC;
+  ysyx_25050147_top->trace(m_trace, 5);
+  m_trace->open("waveform.vcd");
+
+  reset(10);
+
+  while (ysyx_25050147_top->pc < 0x80000010)
+  {
+    ysyx_25050147_top->mem = pmem_read(ysyx_25050147_top->pc);
+    single_cycle();
+    m_trace->dump(sim_time);
+    sim_time++; // 更新仿真时间
+    printf("PC=0x%08x \n", ysyx_25050147_top->pc);
+  }
+  m_trace->close();
+  delete ysyx_25050147_top;
+  return 0;
+}
+// #include "Vour.h"
+// #include "verilated.h"
+// int main(int argc, char **argv)
+// {
+//   VerilatedContext *contextp = new VerilatedContext;
+//   contextp->commandArgs(argc, argv);
+//   Vour *top = new Vour{contextp};
+//   while (!contextp->gotFinish())
+//   {
+//     top->eval();
+//   }
+//   delete top;
+//   delete contextp;
+//   return 0;
+// }
