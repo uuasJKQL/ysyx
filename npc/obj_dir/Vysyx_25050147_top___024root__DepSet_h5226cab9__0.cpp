@@ -3,6 +3,7 @@
 // See Vysyx_25050147_top.h for the primary calling header
 
 #include "verilated.h"
+#include "verilated_dpi.h"
 
 #include "Vysyx_25050147_top__Syms.h"
 #include "Vysyx_25050147_top___024root.h"
@@ -41,4 +42,78 @@ void Vysyx_25050147_top___024root___eval_triggers__act(Vysyx_25050147_top___024r
         Vysyx_25050147_top___024root___dump_triggers__act(vlSelf);
     }
 #endif
+}
+
+void Vysyx_25050147_top___024unit____Vdpiimwrap_notify_ebreak_TOP____024unit();
+
+VL_INLINE_OPT void Vysyx_25050147_top___024root___nba_sequent__TOP__0(Vysyx_25050147_top___024root* vlSelf) {
+    if (false && vlSelf) {}  // Prevent unused
+    Vysyx_25050147_top__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25050147_top___024root___nba_sequent__TOP__0\n"); );
+    // Init
+    CData/*4:0*/ __Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
+    __Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0;
+    IData/*31:0*/ __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
+    __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0;
+    CData/*0:0*/ __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
+    __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0;
+    // Body
+    if ((2U == ((0x98U == ((0x3f8U & (vlSelf->mem << 3U)) 
+                           | (7U & (vlSelf->mem >> 0xcU))))
+                 ? 1U : ((0x398U == ((0x3f8U & (vlSelf->mem 
+                                                << 3U)) 
+                                     | (7U & (vlSelf->mem 
+                                              >> 0xcU))))
+                          ? ((0x400U == ((0x3fffe0U 
+                                          & (vlSelf->mem 
+                                             >> 0xaU)) 
+                                         | (0x1fU & 
+                                            (vlSelf->mem 
+                                             >> 7U))))
+                              ? 2U : 0U) : 0U)))) {
+        Vysyx_25050147_top___024unit____Vdpiimwrap_notify_ebreak_TOP____024unit();
+    }
+    __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0U;
+    if ((0U != (0x1fU & (vlSelf->mem >> 7U)))) {
+        __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 
+            = vlSelf->ysyx_25050147_top__DOT__result;
+        __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 1U;
+        __Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 
+            = (0x1fU & (vlSelf->mem >> 7U));
+    }
+    vlSelf->pc = ((IData)(vlSelf->rst) ? 0x80000000U
+                   : vlSelf->ysyx_25050147_top__DOT__snpc);
+    if (__Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0) {
+        vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf[__Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0] 
+            = __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
+    }
+    if ((1U == ((0x98U == ((0x3f8U & (vlSelf->mem << 3U)) 
+                           | (7U & (vlSelf->mem >> 0xcU))))
+                 ? 1U : ((0x398U == ((0x3f8U & (vlSelf->mem 
+                                                << 3U)) 
+                                     | (7U & (vlSelf->mem 
+                                              >> 0xcU))))
+                          ? ((0x400U == ((0x3fffe0U 
+                                          & (vlSelf->mem 
+                                             >> 0xaU)) 
+                                         | (0x1fU & 
+                                            (vlSelf->mem 
+                                             >> 7U))))
+                              ? 2U : 0U) : 0U)))) {
+        vlSelf->ysyx_25050147_top__DOT__result = ((
+                                                   ((- (IData)(
+                                                               (vlSelf->mem 
+                                                                >> 0x1fU))) 
+                                                    << 0xcU) 
+                                                   | (vlSelf->mem 
+                                                      >> 0x14U)) 
+                                                  + 
+                                                  vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf
+                                                  [
+                                                  (0x1fU 
+                                                   & (vlSelf->mem 
+                                                      >> 0xfU))]);
+    }
+    vlSelf->ysyx_25050147_top__DOT__snpc = ((IData)(4U) 
+                                            + vlSelf->pc);
 }

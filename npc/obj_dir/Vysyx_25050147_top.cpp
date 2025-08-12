@@ -4,6 +4,7 @@
 #include "Vysyx_25050147_top.h"
 #include "Vysyx_25050147_top__Syms.h"
 #include "verilated_vcd_c.h"
+#include "verilated_dpi.h"
 
 //============================================================
 // Constructors
@@ -15,6 +16,7 @@ Vysyx_25050147_top::Vysyx_25050147_top(VerilatedContext* _vcontextp__, const cha
     , rst{vlSymsp->TOP.rst}
     , mem{vlSymsp->TOP.mem}
     , pc{vlSymsp->TOP.pc}
+    , __PVT____024unit{vlSymsp->TOP.__PVT____024unit}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

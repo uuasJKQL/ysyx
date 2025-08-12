@@ -74,14 +74,14 @@ void Vysyx_25050147_top___024root__trace_chg_sub_0(Vysyx_25050147_top___024root*
                                                    << 3U)) 
                                         | (7U & (vlSelf->mem 
                                                  >> 0xcU))))
-                              ? 1U : ((0x11U == ((0x3f8U 
-                                                  & (vlSelf->mem 
-                                                     << 3U)) 
-                                                 | (7U 
-                                                    & (vlSelf->mem 
-                                                       >> 0xcU))))
-                                       ? ((0x20U == 
-                                           ((0x20U 
+                              ? 1U : ((0x398U == ((0x3f8U 
+                                                   & (vlSelf->mem 
+                                                      << 3U)) 
+                                                  | (7U 
+                                                     & (vlSelf->mem 
+                                                        >> 0xcU))))
+                                       ? ((0x400U == 
+                                           ((0x3fffe0U 
                                              & (vlSelf->mem 
                                                 >> 0xaU)) 
                                             | (0x1fU 
@@ -93,6 +93,30 @@ void Vysyx_25050147_top___024root__trace_chg_sub_0(Vysyx_25050147_top___024root*
                                           >> 0x1fU))) 
                               << 0xcU) | (vlSelf->mem 
                                           >> 0x14U))),32);
+    bufp->chgBit(oldp+44,((2U == ((0x98U == ((0x3f8U 
+                                              & (vlSelf->mem 
+                                                 << 3U)) 
+                                             | (7U 
+                                                & (vlSelf->mem 
+                                                   >> 0xcU))))
+                                   ? 1U : ((0x398U 
+                                            == ((0x3f8U 
+                                                 & (vlSelf->mem 
+                                                    << 3U)) 
+                                                | (7U 
+                                                   & (vlSelf->mem 
+                                                      >> 0xcU))))
+                                            ? ((0x400U 
+                                                == 
+                                                ((0x3fffe0U 
+                                                  & (vlSelf->mem 
+                                                     >> 0xaU)) 
+                                                 | (0x1fU 
+                                                    & (vlSelf->mem 
+                                                       >> 7U))))
+                                                ? 2U
+                                                : 0U)
+                                            : 0U)))));
 }
 
 void Vysyx_25050147_top___024root__trace_cleanup(void* voidSelf, VerilatedVcd* /*unused*/) {

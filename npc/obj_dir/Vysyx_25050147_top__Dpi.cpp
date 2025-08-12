@@ -14,11 +14,3 @@
 #include "Vysyx_25050147_top__Dpi.h"
 #include "Vysyx_25050147_top.h"
 
-#ifndef VL_DPIDECL_read_ebreak_
-#define VL_DPIDECL_read_ebreak_
-void read_ebreak(svBit* if_noebreak) {
-    // DPI export at /home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v:59:6
-    return Vysyx_25050147_top::read_ebreak(if_noebreak);
-}
-#endif
-

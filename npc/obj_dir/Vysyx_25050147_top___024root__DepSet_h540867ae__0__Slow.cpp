@@ -3,6 +3,7 @@
 // See Vysyx_25050147_top.h for the primary calling header
 
 #include "verilated.h"
+#include "verilated_dpi.h"
 
 #include "Vysyx_25050147_top___024root.h"
 
@@ -50,7 +51,7 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root___eval_settle(Vysyx_25050147_top_
 #ifdef VL_DEBUG
                 Vysyx_25050147_top___024root___dump_triggers__stl(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 1, "", "Settle region did not converge.");
+                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 2, "", "Settle region did not converge.");
             }
             vlSelf->__VstlIterCount = ((IData)(1U) 
                                        + vlSelf->__VstlIterCount);
@@ -83,15 +84,16 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root___stl_sequent__TOP__0(Vysyx_25050
                                             + vlSelf->pc);
     if ((1U == ((0x98U == ((0x3f8U & (vlSelf->mem << 3U)) 
                            | (7U & (vlSelf->mem >> 0xcU))))
-                 ? 1U : ((0x11U == ((0x3f8U & (vlSelf->mem 
-                                               << 3U)) 
-                                    | (7U & (vlSelf->mem 
-                                             >> 0xcU))))
-                          ? ((0x20U == ((0x20U & (vlSelf->mem 
-                                                  >> 0xaU)) 
-                                        | (0x1fU & 
-                                           (vlSelf->mem 
-                                            >> 7U))))
+                 ? 1U : ((0x398U == ((0x3f8U & (vlSelf->mem 
+                                                << 3U)) 
+                                     | (7U & (vlSelf->mem 
+                                              >> 0xcU))))
+                          ? ((0x400U == ((0x3fffe0U 
+                                          & (vlSelf->mem 
+                                             >> 0xaU)) 
+                                         | (0x1fU & 
+                                            (vlSelf->mem 
+                                             >> 7U))))
                               ? 2U : 0U) : 0U)))) {
         vlSelf->ysyx_25050147_top__DOT__result = ((
                                                    ((- (IData)(

@@ -3,6 +3,7 @@
 // See Vysyx_25050147_top.h for the primary calling header
 
 #include "verilated.h"
+#include "verilated_dpi.h"
 
 #include "Vysyx_25050147_top___024root.h"
 
@@ -13,15 +14,16 @@ VL_INLINE_OPT void Vysyx_25050147_top___024root___ico_sequent__TOP__0(Vysyx_2505
     // Body
     if ((1U == ((0x98U == ((0x3f8U & (vlSelf->mem << 3U)) 
                            | (7U & (vlSelf->mem >> 0xcU))))
-                 ? 1U : ((0x11U == ((0x3f8U & (vlSelf->mem 
-                                               << 3U)) 
-                                    | (7U & (vlSelf->mem 
-                                             >> 0xcU))))
-                          ? ((0x20U == ((0x20U & (vlSelf->mem 
-                                                  >> 0xaU)) 
-                                        | (0x1fU & 
-                                           (vlSelf->mem 
-                                            >> 7U))))
+                 ? 1U : ((0x398U == ((0x3f8U & (vlSelf->mem 
+                                                << 3U)) 
+                                     | (7U & (vlSelf->mem 
+                                              >> 0xcU))))
+                          ? ((0x400U == ((0x3fffe0U 
+                                          & (vlSelf->mem 
+                                             >> 0xaU)) 
+                                         | (0x1fU & 
+                                            (vlSelf->mem 
+                                             >> 7U))))
                               ? 2U : 0U) : 0U)))) {
         vlSelf->ysyx_25050147_top__DOT__result = ((
                                                    ((- (IData)(
@@ -55,61 +57,7 @@ void Vysyx_25050147_top___024root___eval_act(Vysyx_25050147_top___024root* vlSel
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25050147_top___024root___eval_act\n"); );
 }
 
-VL_INLINE_OPT void Vysyx_25050147_top___024root___nba_sequent__TOP__0(Vysyx_25050147_top___024root* vlSelf) {
-    if (false && vlSelf) {}  // Prevent unused
-    Vysyx_25050147_top__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25050147_top___024root___nba_sequent__TOP__0\n"); );
-    // Init
-    CData/*4:0*/ __Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
-    __Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0;
-    IData/*31:0*/ __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
-    __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0;
-    CData/*0:0*/ __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
-    __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0;
-    // Body
-    __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0U;
-    if ((0U != (0x1fU & (vlSelf->mem >> 7U)))) {
-        __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 
-            = vlSelf->ysyx_25050147_top__DOT__result;
-        __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 1U;
-        __Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 
-            = (0x1fU & (vlSelf->mem >> 7U));
-    }
-    vlSelf->pc = ((IData)(vlSelf->rst) ? 0x80000000U
-                   : vlSelf->ysyx_25050147_top__DOT__snpc);
-    if (__Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0) {
-        vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf[__Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0] 
-            = __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
-    }
-    if ((1U == ((0x98U == ((0x3f8U & (vlSelf->mem << 3U)) 
-                           | (7U & (vlSelf->mem >> 0xcU))))
-                 ? 1U : ((0x11U == ((0x3f8U & (vlSelf->mem 
-                                               << 3U)) 
-                                    | (7U & (vlSelf->mem 
-                                             >> 0xcU))))
-                          ? ((0x20U == ((0x20U & (vlSelf->mem 
-                                                  >> 0xaU)) 
-                                        | (0x1fU & 
-                                           (vlSelf->mem 
-                                            >> 7U))))
-                              ? 2U : 0U) : 0U)))) {
-        vlSelf->ysyx_25050147_top__DOT__result = ((
-                                                   ((- (IData)(
-                                                               (vlSelf->mem 
-                                                                >> 0x1fU))) 
-                                                    << 0xcU) 
-                                                   | (vlSelf->mem 
-                                                      >> 0x14U)) 
-                                                  + 
-                                                  vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf
-                                                  [
-                                                  (0x1fU 
-                                                   & (vlSelf->mem 
-                                                      >> 0xfU))]);
-    }
-    vlSelf->ysyx_25050147_top__DOT__snpc = ((IData)(4U) 
-                                            + vlSelf->pc);
-}
+void Vysyx_25050147_top___024root___nba_sequent__TOP__0(Vysyx_25050147_top___024root* vlSelf);
 
 void Vysyx_25050147_top___024root___eval_nba(Vysyx_25050147_top___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
@@ -155,7 +103,7 @@ void Vysyx_25050147_top___024root___eval(Vysyx_25050147_top___024root* vlSelf) {
 #ifdef VL_DEBUG
                 Vysyx_25050147_top___024root___dump_triggers__ico(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 1, "", "Input combinational region did not converge.");
+                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 2, "", "Input combinational region did not converge.");
             }
             vlSelf->__VicoIterCount = ((IData)(1U) 
                                        + vlSelf->__VicoIterCount);
@@ -178,7 +126,7 @@ void Vysyx_25050147_top___024root___eval(Vysyx_25050147_top___024root* vlSelf) {
 #ifdef VL_DEBUG
                     Vysyx_25050147_top___024root___dump_triggers__act(vlSelf);
 #endif
-                    VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 1, "", "Active region did not converge.");
+                    VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 2, "", "Active region did not converge.");
                 }
                 vlSelf->__VactIterCount = ((IData)(1U) 
                                            + vlSelf->__VactIterCount);
@@ -193,7 +141,7 @@ void Vysyx_25050147_top___024root___eval(Vysyx_25050147_top___024root* vlSelf) {
 #ifdef VL_DEBUG
                 Vysyx_25050147_top___024root___dump_triggers__nba(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 1, "", "NBA region did not converge.");
+                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 2, "", "NBA region did not converge.");
             }
             __VnbaIterCount = ((IData)(1U) + __VnbaIterCount);
             Vysyx_25050147_top___024root___eval_nba(vlSelf);

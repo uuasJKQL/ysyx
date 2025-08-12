@@ -26,15 +26,19 @@ VM_CLASSES_FAST += \
 	Vysyx_25050147_top \
 	Vysyx_25050147_top___024root__DepSet_h5226cab9__0 \
 	Vysyx_25050147_top___024root__DepSet_h540867ae__0 \
+	Vysyx_25050147_top___024unit__DepSet_hd0c7ed4c__0 \
 
 # Generated module classes, non-fast-path, compile with low/medium optimization
 VM_CLASSES_SLOW += \
 	Vysyx_25050147_top___024root__Slow \
 	Vysyx_25050147_top___024root__DepSet_h5226cab9__0__Slow \
 	Vysyx_25050147_top___024root__DepSet_h540867ae__0__Slow \
+	Vysyx_25050147_top___024unit__Slow \
+	Vysyx_25050147_top___024unit__DepSet_hd5a74443__0__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \
+	Vysyx_25050147_top__Dpi \
 	Vysyx_25050147_top__Trace__0 \
 
 # Generated support classes, non-fast-path, compile with low/medium optimization
@@ -45,6 +49,7 @@ VM_SUPPORT_SLOW += \
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \
 	verilated \
+	verilated_dpi \
 	verilated_vcd_c \
 	verilated_threads \
 

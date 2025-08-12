@@ -15,9 +15,9 @@ extern "C" {
 #endif
 
 
-    // DPI EXPORTS
-    // DPI export at /home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v:59:6
-    extern void read_ebreak(svBit* if_noebreak);
+    // DPI IMPORTS
+    // DPI import at /home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v:1:30
+    extern void notify_ebreak();
 
 #ifdef __cplusplus
 }

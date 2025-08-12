@@ -14,11 +14,11 @@ module ysyx_25050147_IDU (
         })
 
             10'b0010011000: op_type = 1;
-            10'b0000010001: begin
+            10'b1110011000: begin
                 case ({
-                    mem[15], mem[11:7]
+                    mem[31:15], mem[11:7]
                 })
-                    6'b100000: op_type = 2;
+                    22'b000_000_000_00100000_00000: op_type = 2;
                     default:   op_type = 0;
                 endcase
             end

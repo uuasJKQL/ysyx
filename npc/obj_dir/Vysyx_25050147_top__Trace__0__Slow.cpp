@@ -31,14 +31,15 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root__trace_init_sub__TOP__0(Vysyx_250
     tracep->declBus(c+40,"src2", false,-1, 31,0);
     tracep->declBus(c+37,"result", false,-1, 31,0);
     tracep->declBus(c+38,"rd", false,-1, 4,0);
+    tracep->declBit(c+45,"is_ebreak", false,-1);
     tracep->pushNamePrefix("PC ");
-    tracep->declBus(c+45,"WIDTH", false,-1, 31,0);
-    tracep->declBus(c+46,"RESET_VAL", false,-1, 31,0);
+    tracep->declBus(c+46,"WIDTH", false,-1, 31,0);
+    tracep->declBus(c+47,"RESET_VAL", false,-1, 31,0);
     tracep->declBit(c+35,"clk", false,-1);
     tracep->declBit(c+34,"rst", false,-1);
     tracep->declBus(c+42,"din", false,-1, 31,0);
     tracep->declBus(c+36,"dout", false,-1, 31,0);
-    tracep->declBit(c+47,"wen", false,-1);
+    tracep->declBit(c+48,"wen", false,-1);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("exu ");
     tracep->declBus(c+43,"op_type", false,-1, 4,0);
@@ -56,8 +57,8 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root__trace_init_sub__TOP__0(Vysyx_250
     tracep->declBus(c+38,"rd", false,-1, 4,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("rfile ");
-    tracep->declBus(c+48,"ADDR_WIDTH", false,-1, 2,0);
-    tracep->declBus(c+49,"DATA_WIDTH", false,-1, 5,0);
+    tracep->declBus(c+49,"ADDR_WIDTH", false,-1, 2,0);
+    tracep->declBus(c+50,"DATA_WIDTH", false,-1, 5,0);
     tracep->declBit(c+35,"clk", false,-1);
     tracep->declBus(c+37,"wdata", false,-1, 31,0);
     tracep->declBus(c+38,"waddr", false,-1, 4,0);
@@ -162,28 +163,53 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root__trace_full_sub_0(Vysyx_25050147_
                                            << 3U)) 
                                          | (7U & (vlSelf->mem 
                                                   >> 0xcU))))
-                               ? 1U : ((0x11U == ((0x3f8U 
+                               ? 1U : ((0x398U == (
+                                                   (0x3f8U 
+                                                    & (vlSelf->mem 
+                                                       << 3U)) 
+                                                   | (7U 
+                                                      & (vlSelf->mem 
+                                                         >> 0xcU))))
+                                        ? ((0x400U 
+                                            == ((0x3fffe0U 
+                                                 & (vlSelf->mem 
+                                                    >> 0xaU)) 
+                                                | (0x1fU 
                                                    & (vlSelf->mem 
-                                                      << 3U)) 
-                                                  | (7U 
-                                                     & (vlSelf->mem 
-                                                        >> 0xcU))))
-                                        ? ((0x20U == 
-                                            ((0x20U 
-                                              & (vlSelf->mem 
-                                                 >> 0xaU)) 
-                                             | (0x1fU 
-                                                & (vlSelf->mem 
-                                                   >> 7U))))
+                                                      >> 7U))))
                                             ? 2U : 0U)
                                         : 0U))),5);
     bufp->fullIData(oldp+44,((((- (IData)((vlSelf->mem 
                                            >> 0x1fU))) 
                                << 0xcU) | (vlSelf->mem 
                                            >> 0x14U))),32);
-    bufp->fullIData(oldp+45,(0x20U),32);
-    bufp->fullIData(oldp+46,(0x80000000U),32);
-    bufp->fullBit(oldp+47,(1U));
-    bufp->fullCData(oldp+48,(5U),3);
-    bufp->fullCData(oldp+49,(0x20U),6);
+    bufp->fullBit(oldp+45,((2U == ((0x98U == ((0x3f8U 
+                                               & (vlSelf->mem 
+                                                  << 3U)) 
+                                              | (7U 
+                                                 & (vlSelf->mem 
+                                                    >> 0xcU))))
+                                    ? 1U : ((0x398U 
+                                             == ((0x3f8U 
+                                                  & (vlSelf->mem 
+                                                     << 3U)) 
+                                                 | (7U 
+                                                    & (vlSelf->mem 
+                                                       >> 0xcU))))
+                                             ? ((0x400U 
+                                                 == 
+                                                 ((0x3fffe0U 
+                                                   & (vlSelf->mem 
+                                                      >> 0xaU)) 
+                                                  | (0x1fU 
+                                                     & (vlSelf->mem 
+                                                        >> 7U))))
+                                                 ? 2U
+                                                 : 0U)
+                                             : 0U)))));
+    bufp->fullIData(oldp+46,(0x20U),32);
+    bufp->fullIData(oldp+47,(0x80000000U),32);
+    bufp->fullBit(oldp+48,(1U));
+    bufp->fullCData(oldp+49,(5U),3);
+    bufp->fullCData(oldp+50,(0x20U),6);
 }

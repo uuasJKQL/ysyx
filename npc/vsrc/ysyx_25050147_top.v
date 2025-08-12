@@ -1,3 +1,4 @@
+import "DPI-C" function void notify_ebreak();
 module ysyx_25050147_top (
     input      [31:0] mem,
     input             rst,
@@ -53,11 +54,12 @@ module ysyx_25050147_top (
         rd
 
     );
-
-   
-// export "DPI-C" task read_ebreak;
-// task read_ebreak;
-//  //assign if_noebreak=op_type==2?0:1;
-//    output bit if_noebreak;  
-// endtask
+    wire is_ebreak;
+    
+assign is_ebreak=op_type==2?1:0;
+ always @(posedge clk) begin
+        if (is_ebreak) begin
+            notify_ebreak(); // 调用 DPI-C 函数
+        end
+    end
 endmodule

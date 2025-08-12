@@ -15,6 +15,9 @@
 
 // INCLUDE MODULE CLASSES
 #include "Vysyx_25050147_top___024root.h"
+#include "Vysyx_25050147_top___024unit.h"
+
+// DPI TYPES for DPI Export callbacks (Internal use)
 
 // SYMS CLASS (contains all model state)
 class Vysyx_25050147_top__Syms final : public VerilatedSyms {
@@ -28,6 +31,7 @@ class Vysyx_25050147_top__Syms final : public VerilatedSyms {
 
     // MODULE INSTANCE STATE
     Vysyx_25050147_top___024root   TOP;
+    Vysyx_25050147_top___024unit   TOP____024unit;
 
     // CONSTRUCTORS
     Vysyx_25050147_top__Syms(VerilatedContext* contextp, const char* namep, Vysyx_25050147_top* modelp);
