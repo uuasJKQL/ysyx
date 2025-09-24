@@ -18,6 +18,7 @@
 #include <cpu/difftest.h>
 #include <locale.h>
 #include "../../monitor/sdb/sdb.h"
+#include <ftrace.h>
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -29,14 +30,43 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
+int space_count = 1;
+int inst_num = 0;
 void device_update();
+IFDEF(CONFIG_ITRACE, char iringbuf[16][128]);
+char *addr_to_func_name(vaddr_t pc)
+{
+  char *no_name = "???";
+  for (int i = 0; i <= func_tab.num; i++)
+  {
+    if (pc >= func_tab.pc_value[i] && pc < func_tab.pc_value[i] + func_tab.size[i])
+    {
+      return func_tab.name[i];
+    }
+  }
 
+  return no_name;
+}
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 {
+  if (strcmp(addr_to_func_name(_this->pc), addr_to_func_name(dnpc)))
+  {
+    if (strncmp(_this->logbuf + 24, "ret", 3) == 0)
+    {
+      space_count -= 1;
+      printf("%08x :%*sret[%s]\n", _this->pc, space_count, " ", addr_to_func_name(_this->pc));
+    }
+    else
+    {
+      printf("%08x :%*scall[%s@%08x]\n", _this->pc, space_count, " ", addr_to_func_name(dnpc), dnpc);
+      space_count += 1;
+    }
+  }
+
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND)
   {
-    log_write("%s\n", _this->logbuf);
+    // log_write("%s\n", _this->logbuf);
   }
 #endif
   if (g_print_step)
@@ -90,6 +120,7 @@ static void exec_once(Decode *s, vaddr_t pc)
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *inst = (uint8_t *)&s->isa.inst;
+
 #ifdef CONFIG_ISA_x86
   for (i = 0; i < ilen; i++)
   {
@@ -110,6 +141,17 @@ static void exec_once(Decode *s, vaddr_t pc)
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
               MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
+  if (inst_num < 16)
+  {
+    memcpy(iringbuf[inst_num], s->logbuf, 128);
+    inst_num++;
+  }
+  else
+  {
+    inst_num = 0;
+    memcpy(iringbuf[inst_num], s->logbuf, 128);
+    inst_num++;
+  }
 #endif
 }
 
@@ -179,6 +221,13 @@ void cpu_exec(uint64_t n)
     Log("nemu: %s at pc = " FMT_WORD,
         (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) : (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) : ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
         nemu_state.halt_pc);
+    if (nemu_state.halt_ret == 1 || nemu_state.state == NEMU_ABORT)
+    {
+      for (int i = 0; i < 16; i++)
+      {
+        IFDEF(CONFIG_ITRACE, puts(iringbuf[(i + inst_num) % 16]));
+      }
+    }
     // fall through
   case NEMU_QUIT:
     statistic();
