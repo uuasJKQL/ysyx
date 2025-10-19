@@ -1,4 +1,5 @@
 import "DPI-C" function void notify_ebreak();
+import "DPI-C" function void get_register_value(input int index, output bit [31:0] value);
 module ysyx_25050147_top (
     input      [31:0] mem,
     input             rst,
