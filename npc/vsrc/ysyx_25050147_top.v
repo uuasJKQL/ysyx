@@ -13,18 +13,21 @@ module ysyx_25050147_top (
     wire [ 4:0] raddr;
 
     wire [31:0] snpc;
+       wire [31:0] dnpc;
     wire      [4:0]  op_type;
     wire [31:0] src1;
     wire [31:0] src2;
     wire [31:0] result;
     wire [4:0] rd;
+
     assign waddr = rd;
 
-    assign wdata = result;
+    assign wdata = op_type==1?pc+4:result;
+
     Reg #(32, 32'h80000000) PC (
         clk,
         rst,
-        snpc,
+        dnpc,
         pc,
         1'b1
     );
@@ -38,8 +41,8 @@ module ysyx_25050147_top (
     );
     assign wen=(|waddr)?1:0;
    assign snpc = pc + 4;
+   assign dnpc= op_type==1?result:snpc;
     ysyx_25050147_EXU exu (
-        op_type,
         src1,
         src2,
         result
@@ -47,16 +50,16 @@ module ysyx_25050147_top (
     ysyx_25050147_IDU idu (
         mem,
         rdata,
+        pc,
         raddr,
         op_type,
         src1,
         src2,
         rd
-
     );
     wire is_ebreak;
     
-assign is_ebreak=op_type==2?1:0;
+assign is_ebreak=op_type==0?1:0;
  always @(posedge clk) begin
         if (is_ebreak) begin
             notify_ebreak(); // 调用 DPI-C 函数

@@ -19,17 +19,22 @@ class Vysyx_25050147_top___024root final : public VerilatedModule {
     // DESIGN SPECIFIC STATE
     VL_IN8(clk,0,0);
     VL_IN8(rst,0,0);
+    CData/*4:0*/ ysyx_25050147_top__DOT__op_type;
     CData/*0:0*/ __Vtrigrprev__TOP__clk;
     CData/*0:0*/ __VactContinue;
     VL_IN(mem,31,0);
     VL_OUT(pc,31,0);
-    IData/*31:0*/ ysyx_25050147_top__DOT__snpc;
+    IData/*31:0*/ ysyx_25050147_top__DOT__rdata;
+    IData/*31:0*/ ysyx_25050147_top__DOT__dnpc;
+    IData/*31:0*/ ysyx_25050147_top__DOT__src1;
+    IData/*31:0*/ ysyx_25050147_top__DOT__src2;
     IData/*31:0*/ ysyx_25050147_top__DOT__result;
+    IData/*31:0*/ ysyx_25050147_top__DOT__idu__DOT__op_src1_I;
     IData/*31:0*/ __VstlIterCount;
     IData/*31:0*/ __VicoIterCount;
     IData/*31:0*/ __VactIterCount;
     VlUnpacked<IData/*31:0*/, 32> ysyx_25050147_top__DOT__rfile__DOT__rf;
-    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
+    VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
     VlTriggerVec<1> __VstlTriggered;
     VlTriggerVec<1> __VicoTriggered;
     VlTriggerVec<1> __VactTriggered;

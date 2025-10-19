@@ -13,8 +13,8 @@ static const char mainargs[MAINARGS_MAX_LEN] = MAINARGS_PLACEHOLDER; // defined 
 
 void putch(char ch) {
 }
-
 void halt(int code) {
+   asm volatile("ebreak");
   while (1);
 }
 

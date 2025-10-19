@@ -58,62 +58,94 @@ VL_INLINE_OPT void Vysyx_25050147_top___024root___nba_sequent__TOP__0(Vysyx_2505
     CData/*0:0*/ __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
     __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0;
     // Body
-    if ((2U == ((0x98U == ((0x3f8U & (vlSelf->mem << 3U)) 
-                           | (7U & (vlSelf->mem >> 0xcU))))
-                 ? 1U : ((0x398U == ((0x3f8U & (vlSelf->mem 
-                                                << 3U)) 
-                                     | (7U & (vlSelf->mem 
-                                              >> 0xcU))))
-                          ? ((0x400U == ((0x3fffe0U 
-                                          & (vlSelf->mem 
-                                             >> 0xaU)) 
-                                         | (0x1fU & 
-                                            (vlSelf->mem 
-                                             >> 7U))))
-                              ? 2U : 0U) : 0U)))) {
+    if ((0U == (IData)(vlSelf->ysyx_25050147_top__DOT__op_type))) {
         Vysyx_25050147_top___024unit____Vdpiimwrap_notify_ebreak_TOP____024unit();
     }
     __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0U;
     if ((0U != (0x1fU & (vlSelf->mem >> 7U)))) {
         __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 
-            = vlSelf->ysyx_25050147_top__DOT__result;
+            = ((1U == (IData)(vlSelf->ysyx_25050147_top__DOT__op_type))
+                ? ((IData)(4U) + vlSelf->pc) : vlSelf->ysyx_25050147_top__DOT__result);
         __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 1U;
         __Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 
             = (0x1fU & (vlSelf->mem >> 7U));
     }
-    vlSelf->pc = ((IData)(vlSelf->rst) ? 0x80000000U
-                   : vlSelf->ysyx_25050147_top__DOT__snpc);
     if (__Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0) {
         vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf[__Vdlyvdim0__ysyx_25050147_top__DOT__rfile__DOT__rf__v0] 
             = __Vdlyvval__ysyx_25050147_top__DOT__rfile__DOT__rf__v0;
     }
-    if ((1U == ((0x98U == ((0x3f8U & (vlSelf->mem << 3U)) 
-                           | (7U & (vlSelf->mem >> 0xcU))))
-                 ? 1U : ((0x398U == ((0x3f8U & (vlSelf->mem 
-                                                << 3U)) 
-                                     | (7U & (vlSelf->mem 
-                                              >> 0xcU))))
-                          ? ((0x400U == ((0x3fffe0U 
-                                          & (vlSelf->mem 
-                                             >> 0xaU)) 
-                                         | (0x1fU & 
-                                            (vlSelf->mem 
-                                             >> 7U))))
-                              ? 2U : 0U) : 0U)))) {
-        vlSelf->ysyx_25050147_top__DOT__result = ((
-                                                   ((- (IData)(
-                                                               (vlSelf->mem 
-                                                                >> 0x1fU))) 
-                                                    << 0xcU) 
-                                                   | (vlSelf->mem 
-                                                      >> 0x14U)) 
-                                                  + 
-                                                  vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf
-                                                  [
-                                                  (0x1fU 
-                                                   & (vlSelf->mem 
-                                                      >> 0xfU))]);
-    }
-    vlSelf->ysyx_25050147_top__DOT__snpc = ((IData)(4U) 
-                                            + vlSelf->pc);
+    vlSelf->ysyx_25050147_top__DOT__rdata = vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf
+        [(0x1fU & (vlSelf->mem >> 0xfU))];
+    vlSelf->pc = ((IData)(vlSelf->rst) ? 0x80000000U
+                   : vlSelf->ysyx_25050147_top__DOT__dnpc);
+    vlSelf->ysyx_25050147_top__DOT__src2 = ((0x40U 
+                                             & vlSelf->mem)
+                                             ? ((0x20U 
+                                                 & vlSelf->mem)
+                                                 ? 
+                                                ((0x10U 
+                                                  & vlSelf->mem)
+                                                  ? 0U
+                                                  : 
+                                                 ((8U 
+                                                   & vlSelf->mem)
+                                                   ? 
+                                                  ((4U 
+                                                    & vlSelf->mem)
+                                                    ? 
+                                                   ((2U 
+                                                     & vlSelf->mem)
+                                                     ? 
+                                                    ((1U 
+                                                      & vlSelf->mem)
+                                                      ? vlSelf->pc
+                                                      : 0U)
+                                                     : 0U)
+                                                    : 0U)
+                                                   : 
+                                                  ((4U 
+                                                    & vlSelf->mem)
+                                                    ? 
+                                                   ((2U 
+                                                     & vlSelf->mem)
+                                                     ? 
+                                                    ((1U 
+                                                      & vlSelf->mem)
+                                                      ? vlSelf->ysyx_25050147_top__DOT__rdata
+                                                      : 0U)
+                                                     : 0U)
+                                                    : 0U)))
+                                                 : 0U)
+                                             : ((0x20U 
+                                                 & vlSelf->mem)
+                                                 ? 0U
+                                                 : 
+                                                ((0x10U 
+                                                  & vlSelf->mem)
+                                                  ? 
+                                                 ((8U 
+                                                   & vlSelf->mem)
+                                                   ? 0U
+                                                   : 
+                                                  ((4U 
+                                                    & vlSelf->mem)
+                                                    ? 
+                                                   ((2U 
+                                                     & vlSelf->mem)
+                                                     ? 
+                                                    ((1U 
+                                                      & vlSelf->mem)
+                                                      ? vlSelf->pc
+                                                      : 0U)
+                                                     : 0U)
+                                                    : 
+                                                   ((2U 
+                                                     & vlSelf->mem)
+                                                     ? 
+                                                    ((1U 
+                                                      & vlSelf->mem)
+                                                      ? vlSelf->ysyx_25050147_top__DOT__rdata
+                                                      : 0U)
+                                                     : 0U)))
+                                                  : 0U)));
 }

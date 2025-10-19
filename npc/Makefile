@@ -56,15 +56,25 @@ all:
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Write this Makefile by your self."
+	@echo "编译仿真程序..."
 	$(VERILATOR) $(VERILATOR_FLAGS) \
 		--top-module $(TOPNAME) \
 		-CFLAGS "-DTOP_NAME=V$(TOPNAME)" \
 		$(TESTBENCH) $(VSRCS)
 
 	@echo "=============================================="
-	@echo "Simulation started"
+	@echo "仿真开始"
+	@echo "程序文件: $(if $(IMG),$(IMG),默认程序)"
+	@echo "超时周期: $(TIMEOUT)"
+	@echo "详细模式: $(if $(filter 1,$(VERBOSE)),是,否)"
 	@echo "=============================================="
-	./$(SIM_EXE)
+	
+	$(eval SIM_ARGS :=)
+	$(if $(IMG), $(eval SIM_ARGS := $(SIM_ARGS) $(IMG)))
+	$(if $(filter-out 1000,$(TIMEOUT)), $(eval SIM_ARGS := $(SIM_ARGS) -t $(TIMEOUT)))
+	$(if $(filter 1,$(VERBOSE)), $(eval SIM_ARGS := $(SIM_ARGS) -v))
+	
+	./$(SIM_EXE) $(SIM_ARGS)
+
 
 include ../Makefile

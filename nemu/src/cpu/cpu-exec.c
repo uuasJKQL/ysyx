@@ -49,6 +49,7 @@ char *addr_to_func_name(vaddr_t pc)
 }
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 {
+#ifdef CONFIG_ITRACE_COND
   if (strcmp(addr_to_func_name(_this->pc), addr_to_func_name(dnpc)))
   {
     if (strncmp(_this->logbuf + 24, "ret", 3) == 0)
@@ -62,7 +63,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
       space_count += 1;
     }
   }
-
+#endif
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND)
   {
