@@ -1,5 +1,5 @@
 import "DPI-C" function void notify_ebreak();
-import "DPI-C" function void get_register_value(input int index, output bit [31:0] value);
+import "DPI-C" function void update_shadow_register(input int index, input bit [31:0] value);
 module ysyx_25050147_top (
     input      [31:0] mem,
     input             rst,
@@ -66,4 +66,9 @@ assign is_ebreak=op_type==0?1:0;
             notify_ebreak(); // 调用 DPI-C 函数
         end
     end
+always @(posedge clk) begin
+    if (wen && waddr != 0) begin
+        update_shadow_register({{27'b0}, waddr}, wdata);
+    end
+end
 endmodule

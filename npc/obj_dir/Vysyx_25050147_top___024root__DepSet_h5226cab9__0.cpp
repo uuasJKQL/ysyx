@@ -45,6 +45,7 @@ void Vysyx_25050147_top___024root___eval_triggers__act(Vysyx_25050147_top___024r
 }
 
 void Vysyx_25050147_top___024unit____Vdpiimwrap_notify_ebreak_TOP____024unit();
+void Vysyx_25050147_top___024unit____Vdpiimwrap_update_shadow_register_TOP____024unit(IData/*31:0*/ index, IData/*31:0*/ value);
 
 VL_INLINE_OPT void Vysyx_25050147_top___024root___nba_sequent__TOP__0(Vysyx_25050147_top___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
@@ -60,6 +61,22 @@ VL_INLINE_OPT void Vysyx_25050147_top___024root___nba_sequent__TOP__0(Vysyx_2505
     // Body
     if ((0U == (IData)(vlSelf->ysyx_25050147_top__DOT__op_type))) {
         Vysyx_25050147_top___024unit____Vdpiimwrap_notify_ebreak_TOP____024unit();
+    }
+    if (((0U != (0x1fU & (vlSelf->mem >> 7U))) & (0U 
+                                                  != 
+                                                  (0x1fU 
+                                                   & (vlSelf->mem 
+                                                      >> 7U))))) {
+        Vysyx_25050147_top___024unit____Vdpiimwrap_update_shadow_register_TOP____024unit(
+                                                                                (0x1fU 
+                                                                                & (vlSelf->mem 
+                                                                                >> 7U)), 
+                                                                                ((1U 
+                                                                                == (IData)(vlSelf->ysyx_25050147_top__DOT__op_type))
+                                                                                 ? 
+                                                                                ((IData)(4U) 
+                                                                                + vlSelf->pc)
+                                                                                 : vlSelf->ysyx_25050147_top__DOT__result));
     }
     __Vdlyvset__ysyx_25050147_top__DOT__rfile__DOT__rf__v0 = 0U;
     if ((0U != (0x1fU & (vlSelf->mem >> 7U)))) {
