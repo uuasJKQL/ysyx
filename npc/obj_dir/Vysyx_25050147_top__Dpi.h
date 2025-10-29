@@ -18,6 +18,10 @@ extern "C" {
     // DPI IMPORTS
     // DPI import at /home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v:1:30
     extern void notify_ebreak();
+    // DPI import at /home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_IFU.v:1:29
+    extern int pmem_read(int raddr);
+    // DPI import at /home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_IFU.v:2:30
+    extern void pmem_write(int waddr, int wdata, char wmask);
     // DPI import at /home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v:2:30
     extern void update_shadow_register(int index, const svBitVecVal* value);
 

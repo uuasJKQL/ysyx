@@ -51,7 +51,7 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root___eval_settle(Vysyx_25050147_top_
 #ifdef VL_DEBUG
                 Vysyx_25050147_top___024root___dump_triggers__stl(vlSelf);
 #endif
-                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 3, "", "Settle region did not converge.");
+                VL_FATAL_MT("/home/wyh/ysyx-workbench/npc/vsrc/ysyx_25050147_top.v", 6, "", "Settle region did not converge.");
             }
             vlSelf->__VstlIterCount = ((IData)(1U) 
                                        + vlSelf->__VstlIterCount);
@@ -75,7 +75,7 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root___dump_triggers__stl(Vysyx_250501
 }
 #endif  // VL_DEBUG
 
-void Vysyx_25050147_top___024root___ico_sequent__TOP__0(Vysyx_25050147_top___024root* vlSelf);
+VL_ATTR_COLD void Vysyx_25050147_top___024root___stl_sequent__TOP__0(Vysyx_25050147_top___024root* vlSelf);
 
 VL_ATTR_COLD void Vysyx_25050147_top___024root___eval_stl(Vysyx_25050147_top___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
@@ -83,27 +83,11 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root___eval_stl(Vysyx_25050147_top___0
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25050147_top___024root___eval_stl\n"); );
     // Body
     if (vlSelf->__VstlTriggered.at(0U)) {
-        Vysyx_25050147_top___024root___ico_sequent__TOP__0(vlSelf);
-        vlSelf->__Vm_traceActivity[2U] = 1U;
+        Vysyx_25050147_top___024root___stl_sequent__TOP__0(vlSelf);
         vlSelf->__Vm_traceActivity[1U] = 1U;
         vlSelf->__Vm_traceActivity[0U] = 1U;
     }
 }
-
-#ifdef VL_DEBUG
-VL_ATTR_COLD void Vysyx_25050147_top___024root___dump_triggers__ico(Vysyx_25050147_top___024root* vlSelf) {
-    if (false && vlSelf) {}  // Prevent unused
-    Vysyx_25050147_top__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25050147_top___024root___dump_triggers__ico\n"); );
-    // Body
-    if ((1U & (~ (IData)(vlSelf->__VicoTriggered.any())))) {
-        VL_DBG_MSGF("         No triggers active\n");
-    }
-    if (vlSelf->__VicoTriggered.at(0U)) {
-        VL_DBG_MSGF("         'ico' region trigger index 0 is active: Internal 'ico' trigger - first iteration\n");
-    }
-}
-#endif  // VL_DEBUG
 
 #ifdef VL_DEBUG
 VL_ATTR_COLD void Vysyx_25050147_top___024root___dump_triggers__act(Vysyx_25050147_top___024root* vlSelf) {
@@ -140,22 +124,35 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root___ctor_var_reset(Vysyx_25050147_t
     Vysyx_25050147_top__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vysyx_25050147_top___024root___ctor_var_reset\n"); );
     // Body
-    vlSelf->mem = VL_RAND_RESET_I(32);
     vlSelf->rst = VL_RAND_RESET_I(1);
     vlSelf->clk = VL_RAND_RESET_I(1);
     vlSelf->pc = VL_RAND_RESET_I(32);
-    vlSelf->ysyx_25050147_top__DOT__rdata = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__mem = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__waddr_mem = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__rdata1 = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__rdata2 = VL_RAND_RESET_I(32);
     vlSelf->ysyx_25050147_top__DOT__dnpc = VL_RAND_RESET_I(32);
     vlSelf->ysyx_25050147_top__DOT__op_type = VL_RAND_RESET_I(5);
     vlSelf->ysyx_25050147_top__DOT__src1 = VL_RAND_RESET_I(32);
     vlSelf->ysyx_25050147_top__DOT__src2 = VL_RAND_RESET_I(32);
-    vlSelf->ysyx_25050147_top__DOT__result = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__inst = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__alu_op = VL_RAND_RESET_I(4);
     for (int __Vi0 = 0; __Vi0 < 32; ++__Vi0) {
         vlSelf->ysyx_25050147_top__DOT__rfile__DOT__rf[__Vi0] = VL_RAND_RESET_I(32);
     }
-    vlSelf->ysyx_25050147_top__DOT__idu__DOT__op_src1_I = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__result = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__Result = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__t_no_Cin = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__Carry = VL_RAND_RESET_I(1);
+    vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__Cin = VL_RAND_RESET_I(1);
+    vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__is_branch = VL_RAND_RESET_I(1);
+    vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT____VdfgExtracted_hf56215be__0 = VL_RAND_RESET_I(1);
+    vlSelf->ysyx_25050147_top__DOT__idu__DOT__op_src2_I = VL_RAND_RESET_I(32);
+    vlSelf->__Vfunc_pmem_read__0__Vfuncout = 0;
+    vlSelf->__Vfunc_pmem_read__3__Vfuncout = 0;
+    vlSelf->__Vtableidx1 = 0;
     vlSelf->__Vtrigrprev__TOP__clk = VL_RAND_RESET_I(1);
-    for (int __Vi0 = 0; __Vi0 < 3; ++__Vi0) {
+    for (int __Vi0 = 0; __Vi0 < 2; ++__Vi0) {
         vlSelf->__Vm_traceActivity[__Vi0] = 0;
     }
 }

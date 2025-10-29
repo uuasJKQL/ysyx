@@ -5,8 +5,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <dlfcn.h> // 动态链接库支持
+#include <dlfcn.h>
 #include <map>
+#include <cstring>
 
 #include "Vysyx_25050147_top.h"
 #include "verilated.h"
@@ -20,6 +21,8 @@ vluint64_t sim_time = 0;
 // 全局变量存储指令内存
 std::vector<uint32_t> instruction_memory;
 bool exit1 = 0;
+bool hit_good_trap = false;
+int exit_code = -1;
 
 // 寄存器名称映射
 const char *reg_names[32] = {
@@ -69,20 +72,151 @@ const std::vector<uint32_t> DEFAULT_PROGRAM = {
     0x00100073  // ebreak
 };
 
-int pmem_read(uint32_t addr)
-{
-    // 计算内存索引（假设指令从0x80000000开始）
-    uint32_t index = (addr - 0x80000000) / 4;
+// 全局内存模拟
+#define MEM_SIZE (64 * 1024 * 1024) // 64MB 内存
+#define MEM_BASE 0x80000000         // 内存基地址
+static uint8_t *memory = nullptr;
 
-    if (index < instruction_memory.size())
+// 地址转换函数：将虚拟地址转换为物理地址
+uint32_t virtual_to_physical(uint32_t vaddr)
+{
+    // 对于简单的系统，我们可以直接将0x80000000映射到物理内存的0地址
+    // 或者保持地址不变，但分配足够大的内存
+    if (vaddr >= MEM_BASE && vaddr < MEM_BASE + MEM_SIZE)
     {
-        return instruction_memory[index];
+        return vaddr - MEM_BASE;
     }
-    else
+    // 如果地址不在我们管理的内存范围内，返回一个错误值
+    return 0xFFFFFFFF;
+}
+
+// DPI-C 函数实现
+extern "C" int pmem_read(int raddr)
+{
+    // 总是读取地址为 `raddr & ~0x3u` 的4字节返回
+    uint32_t aligned_addr = raddr & ~0x3u;
+
+    // 检查内存是否初始化
+    if (!memory)
     {
-        // 如果地址超出范围，返回ebreak指令（0x00100073）
-        return 0x00100073;
+        printf("错误: 内存未初始化!\n");
+        return 0;
     }
+
+    // 地址转换
+    uint32_t phys_addr = virtual_to_physical(aligned_addr);
+
+    // 检查地址是否在有效范围内
+    if (phys_addr == 0xFFFFFFFF || phys_addr >= MEM_SIZE - 3)
+    {
+        // 对于不在我们管理范围内的地址，返回0
+        // printf("警告: 内存读取地址越界: 0x%08x -> 0x%08x\n", aligned_addr, phys_addr);
+        return 0;
+    }
+
+    // 读取4字节
+    uint32_t value = 0;
+    value |= (uint32_t)memory[phys_addr + 0] << 0;
+    value |= (uint32_t)memory[phys_addr + 1] << 8;
+    value |= (uint32_t)memory[phys_addr + 2] << 16;
+    value |= (uint32_t)memory[phys_addr + 3] << 24;
+
+    // printf("内存读取: vaddr=0x%08x, paddr=0x%08x, value=0x%08x\n", aligned_addr, phys_addr, value);
+    return value;
+}
+
+extern "C" void pmem_write(int waddr, int wdata, char wmask)
+{
+    // 总是往地址为 `waddr & ~0x3u` 的4字节按写掩码 `wmask` 写入 `wdata`
+    uint32_t aligned_addr = waddr & ~0x3u;
+
+    // 检查内存是否初始化
+    if (!memory)
+    {
+        printf("错误: 内存未初始化!\n");
+        return;
+    }
+
+    // 地址转换
+    uint32_t phys_addr = virtual_to_physical(aligned_addr);
+
+    // 检查地址是否在有效范围内
+    if (phys_addr == 0xFFFFFFFF || phys_addr >= MEM_SIZE - 3)
+    {
+        // 对于不在我们管理范围内的地址，忽略写入
+        // printf("警告: 内存写入地址越界: 0x%08x -> 0x%08x\n", aligned_addr, phys_addr);
+        return;
+    }
+
+    // 根据写掩码写入相应的字节
+    if (wmask & 0x1)
+        memory[phys_addr + 0] = (wdata >> 0) & 0xFF;
+    if (wmask & 0x2)
+        memory[phys_addr + 1] = (wdata >> 8) & 0xFF;
+    if (wmask & 0x4)
+        memory[phys_addr + 2] = (wdata >> 16) & 0xFF;
+    if (wmask & 0x8)
+        memory[phys_addr + 3] = (wdata >> 24) & 0xFF;
+
+    // printf("内存写入: vaddr=0x%08x, paddr=0x%08x, data=0x%08x, mask=0x%x\n",
+    //        aligned_addr, phys_addr, wdata, wmask);
+}
+
+// 初始化内存
+void initialize_memory()
+{
+    if (!memory)
+    {
+        memory = (uint8_t *)malloc(MEM_SIZE);
+        if (!memory)
+        {
+            printf("错误: 无法分配内存!\n");
+            exit(1);
+        }
+        memset(memory, 0, MEM_SIZE);
+        printf("内存初始化成功: %d MB, 基地址: 0x%08x\n", MEM_SIZE / (1024 * 1024), MEM_BASE);
+    }
+}
+
+// 清理内存
+void cleanup_memory()
+{
+    if (memory)
+    {
+        free(memory);
+        memory = nullptr;
+        printf("内存已释放\n");
+    }
+}
+
+// 使用DPI-C函数读取内存的包装函数
+int pmem_read_wrapper(uint32_t addr)
+{
+    return pmem_read(addr);
+}
+
+// 初始化内存：将程序加载到模拟内存中
+void initialize_memory_with_program()
+{
+    initialize_memory();
+
+    // 将程序写入内存的0x80000000位置
+    for (size_t i = 0; i < instruction_memory.size(); i++)
+    {
+        uint32_t addr = MEM_BASE + i * 4;
+        uint32_t instruction = instruction_memory[i];
+
+        // 使用DPI-C函数写入内存，写入4个字节（wmask = 0xF）
+        pmem_write(addr, instruction, 0xF);
+
+        if (i < 10)
+        { // 只打印前10条指令的加载信息
+            uint32_t phys_addr = virtual_to_physical(addr);
+            printf("加载指令到内存: vaddr=0x%08x, paddr=0x%08x, inst=0x%08x\n",
+                   addr, phys_addr, instruction);
+        }
+    }
+    printf("总共加载了 %zu 条指令到内存\n", instruction_memory.size());
 }
 
 // DPI-C函数：更新阴影寄存器
@@ -135,7 +269,7 @@ void difftest_sync_initial_state()
     // 同步内存：将测试程序复制到NEMU
     if (!instruction_memory.empty())
     {
-        difftest_memcpy(0x80000000, instruction_memory.data(),
+        difftest_memcpy(MEM_BASE, instruction_memory.data(),
                         instruction_memory.size() * 4, true);
     }
 
@@ -145,8 +279,9 @@ void difftest_sync_initial_state()
     {
         dut_regs.gpr[i] = 0;
     }
-    dut_regs.pc = 0x80000000; // 初始PC
-    dut_regs.gpr[0] = 0;      // x0 (zero) 必须为0
+    dut_regs.pc = MEM_BASE;       // 初始PC
+    dut_regs.gpr[0] = 0;          // x0 (zero) 必须为0
+    dut_regs.gpr[2] = 0x80009000; // 设置初始栈指针，这是RISC-V程序的常见设置
 
     // 同步寄存器状态到REF
     difftest_regcpy(&dut_regs, true);
@@ -316,7 +451,24 @@ bool load_binary_file(const std::string &filename, uint32_t base_addr = 0x800000
 
 void notify_ebreak()
 {
-    std::cout << "EBREAK指令触发，停止仿真" << std::endl;
+    std::cout << "EBREAK指令触发，检查程序状态..." << std::endl;
+
+    // 检查a0寄存器(x10)的值，这是RISC-V中常用的返回值寄存器
+    uint32_t return_value = shadow_registers[10]; // a0寄存器
+
+    if (return_value == 0)
+    {
+        std::cout << "✓ HIT GOOD TRAP: 程序正常结束 (a0 = 0)" << std::endl;
+        hit_good_trap = true;
+        exit_code = 0;
+    }
+    else
+    {
+        std::cout << "✗ BAD TRAP: 程序异常结束 (a0 = " << return_value << ")" << std::endl;
+        hit_good_trap = false;
+        exit_code = return_value;
+    }
+
     exit1 = true;
 }
 
@@ -361,7 +513,8 @@ int main(int argc, char **argv)
 {
     // 默认参数
     std::string program_file = "";
-    uint32_t timeout_cycles = 1000;
+    uint32_t timeout_cycles = 100000;
+    uint32_t no_use = 0;
     bool verbose = false;
 #ifdef DIFFTEST
     std::string diff_so_path = "";
@@ -382,7 +535,7 @@ int main(int argc, char **argv)
         {
             if (i + 1 < argc)
             {
-                timeout_cycles = std::stoi(argv[++i]);
+                no_use = std::stoi(argv[++i]);
             }
             else
             {
@@ -420,6 +573,9 @@ int main(int argc, char **argv)
             program_file = arg;
         }
     }
+
+    // 初始化内存
+    initialize_memory();
 
     // 初始化阴影寄存器
     memset(shadow_registers, 0, sizeof(shadow_registers));
@@ -463,6 +619,9 @@ int main(int argc, char **argv)
         instruction_memory = DEFAULT_PROGRAM;
     }
 
+    // 使用DPI-C函数将程序加载到内存中
+    initialize_memory_with_program();
+
 #ifdef DIFFTEST
     // 同步初始状态到REF
     if (enable_difftest)
@@ -483,11 +642,10 @@ int main(int argc, char **argv)
     {
         shadow_registers[i] = 0;
     }
-    shadow_registers[0] = 0; // x0 必须为0
+    shadow_registers[0] = 0;          // x0 必须为0
+    shadow_registers[2] = 0x80009000; // 设置初始栈指针
 
     // 主仿真循环
-    ysyx_25050147_top->mem = pmem_read(ysyx_25050147_top->pc);
-
     while (!exit1 && sim_time < timeout_cycles)
     {
         ysyx_25050147_top->clk = 0;
@@ -496,10 +654,24 @@ int main(int argc, char **argv)
         ysyx_25050147_top->clk = 1;
         ysyx_25050147_top->eval();
 
+        // 检查是否执行到ebreak指令
+        // 现在通过读取当前PC地址的指令来检查
+        uint32_t current_pc = ysyx_25050147_top->pc;
+        uint32_t current_inst = pmem_read_wrapper(current_pc);
+
+        if (current_inst == 0x00100073)
+        { // ebreak的指令编码
+            if (verbose)
+            {
+                printf("周期=%lu: 检测到EBREAK指令\n", sim_time);
+            }
+            notify_ebreak();
+        }
+
         if (verbose)
         {
             printf("周期=%lu, PC=0x%08x, Inst=0x%08x\n",
-                   sim_time, ysyx_25050147_top->pc, ysyx_25050147_top->mem);
+                   sim_time, current_pc, current_inst);
         }
 
 #ifdef DIFFTEST
@@ -515,7 +687,6 @@ int main(int argc, char **argv)
 #endif
 
         sim_time++;
-        ysyx_25050147_top->mem = pmem_read(ysyx_25050147_top->pc);
 
         if (sim_time % 1000 == 0)
         {
@@ -530,17 +701,23 @@ int main(int argc, char **argv)
     m_trace->dump(sim_time);
 
     // 仿真结束处理
-    if (exit1)
+    if (hit_good_trap)
     {
-        std::cout << "仿真正常结束（EBREAK触发）" << std::endl;
+        std::cout << "🎉 仿真成功: HIT GOOD TRAP!" << std::endl;
+        std::cout << "程序正常结束，返回码: " << exit_code << std::endl;
+    }
+    else if (exit1)
+    {
+        std::cout << "❌ 仿真失败: BAD TRAP或异常退出" << std::endl;
+        std::cout << "退出码: " << exit_code << std::endl;
     }
     else if (sim_time >= timeout_cycles)
     {
-        std::cout << "仿真超时结束" << std::endl;
+        std::cout << "⏰ 仿真超时结束" << std::endl;
     }
     else
     {
-        std::cout << "仿真因DiffTest错误结束" << std::endl;
+        std::cout << "🔍 仿真因DiffTest错误结束" << std::endl;
     }
 
     std::cout << "总仿真周期: " << sim_time << std::endl;
@@ -562,5 +739,9 @@ int main(int argc, char **argv)
     delete ysyx_25050147_top;
     delete m_trace;
 
-    return 0;
+    // 清理内存
+    cleanup_memory();
+
+    // 根据是否命中GOOD TRAP返回相应的退出码
+    return hit_good_trap ? 0 : 1;
 }
