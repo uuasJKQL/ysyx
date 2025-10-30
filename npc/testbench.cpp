@@ -24,6 +24,9 @@ bool exit1 = 0;
 bool hit_good_trap = false;
 int exit_code = -1;
 
+// 内存跟踪开关
+bool enable_mem_trace = true;
+
 // 寄存器名称映射
 const char *reg_names[32] = {
     "zero", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -90,6 +93,51 @@ uint32_t virtual_to_physical(uint32_t vaddr)
     return 0xFFFFFFFF;
 }
 
+// 打印内存访问详情
+void print_memory_access(const char *type, uint32_t vaddr, uint32_t paddr,
+                         uint32_t value, uint8_t mask, size_t size, bool is_write)
+{
+    if (!enable_mem_trace)
+        return;
+
+    printf("[MEM %s] vaddr=0x%08x, paddr=0x%08x, ",
+           is_write ? "WRITE" : "READ", vaddr, paddr);
+
+    if (is_write)
+    {
+        printf("value=0x%08x, mask=0x%02x, bytes=[", value, mask);
+        for (int i = 0; i < 4; i++)
+        {
+            if (mask & (1 << i))
+            {
+                uint8_t byte_val = (value >> (i * 8)) & 0xFF;
+                printf("0x%02x", byte_val);
+            }
+            else
+            {
+                printf("----");
+            }
+            if (i < 3)
+                printf(" ");
+        }
+        printf("]");
+    }
+    else
+    {
+        printf("value=0x%08x, bytes=[", value);
+        for (int i = 0; i < 4; i++)
+        {
+            uint8_t byte_val = (value >> (i * 8)) & 0xFF;
+            printf("0x%02x", byte_val);
+            if (i < 3)
+                printf(" ");
+        }
+        printf("]");
+    }
+
+    printf("\n");
+}
+
 // DPI-C 函数实现
 extern "C" int pmem_read(int raddr)
 {
@@ -110,7 +158,6 @@ extern "C" int pmem_read(int raddr)
     if (phys_addr == 0xFFFFFFFF || phys_addr >= MEM_SIZE - 3)
     {
         // 对于不在我们管理范围内的地址，返回0
-        // printf("警告: 内存读取地址越界: 0x%08x -> 0x%08x\n", aligned_addr, phys_addr);
         return 0;
     }
 
@@ -121,7 +168,9 @@ extern "C" int pmem_read(int raddr)
     value |= (uint32_t)memory[phys_addr + 2] << 16;
     value |= (uint32_t)memory[phys_addr + 3] << 24;
 
-    // printf("内存读取: vaddr=0x%08x, paddr=0x%08x, value=0x%08x\n", aligned_addr, phys_addr, value);
+    // 打印内存读取详情
+    print_memory_access("READ", aligned_addr, phys_addr, value, 0xF, 4, false);
+
     return value;
 }
 
@@ -144,9 +193,44 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask)
     if (phys_addr == 0xFFFFFFFF || phys_addr >= MEM_SIZE - 3)
     {
         // 对于不在我们管理范围内的地址，忽略写入
-        // printf("警告: 内存写入地址越界: 0x%08x -> 0x%08x\n", aligned_addr, phys_addr);
         return;
     }
+
+    // 打印内存写入详情（在写入前打印，显示旧值）
+    uint32_t old_value = 0;
+    old_value |= (uint32_t)memory[phys_addr + 0] << 0;
+    old_value |= (uint32_t)memory[phys_addr + 1] << 8;
+    old_value |= (uint32_t)memory[phys_addr + 2] << 16;
+    old_value |= (uint32_t)memory[phys_addr + 3] << 24;
+
+    printf("[MEM WRITE] vaddr=0x%08x, paddr=0x%08x, old_value=0x%08x, new_value=0x%08x, mask=0x%02x\n",
+           aligned_addr, phys_addr, old_value, wdata, wmask);
+
+    printf("           Bytes: [");
+    for (int i = 0; i < 4; i++)
+    {
+        uint32_t byte_addr = phys_addr + i;
+        uint8_t old_byte = memory[byte_addr];
+        uint8_t new_byte = old_byte;
+
+        if (wmask & (1 << i))
+        {
+            new_byte = (wdata >> (i * 8)) & 0xFF;
+        }
+
+        if (wmask & (1 << i))
+        {
+            printf("0x%08x: 0x%02x->0x%02x", aligned_addr + i, old_byte, new_byte);
+        }
+        else
+        {
+            printf("0x%08x: 0x%02x", aligned_addr + i, old_byte);
+        }
+
+        if (i < 3)
+            printf(", ");
+    }
+    printf("]\n");
 
     // 根据写掩码写入相应的字节
     if (wmask & 0x1)
@@ -157,9 +241,6 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask)
         memory[phys_addr + 2] = (wdata >> 16) & 0xFF;
     if (wmask & 0x8)
         memory[phys_addr + 3] = (wdata >> 24) & 0xFF;
-
-    // printf("内存写入: vaddr=0x%08x, paddr=0x%08x, data=0x%08x, mask=0x%x\n",
-    //        aligned_addr, phys_addr, wdata, wmask);
 }
 
 // 初始化内存
@@ -199,6 +280,8 @@ int pmem_read_wrapper(uint32_t addr)
 void initialize_memory_with_program()
 {
     initialize_memory();
+
+    printf("开始加载程序到内存...\n");
 
     // 将程序写入内存的0x80000000位置
     for (size_t i = 0; i < instruction_memory.size(); i++)
@@ -479,6 +562,7 @@ void print_usage(const char *program_name)
     std::cout << "  -h, --help     显示此帮助信息" << std::endl;
     std::cout << "  -t, --timeout N 设置仿真超时周期数（默认: 1000）" << std::endl;
     std::cout << "  -v, --verbose   显示详细仿真信息" << std::endl;
+    std::cout << "  --no-mem-trace  禁用内存访问跟踪" << std::endl;
 #ifdef DIFFTEST
     std::cout << "  --diff SO_PATH  启用DiffTest，指定NEMU动态库路径" << std::endl;
 #endif
@@ -513,7 +597,7 @@ int main(int argc, char **argv)
 {
     // 默认参数
     std::string program_file = "";
-    uint32_t timeout_cycles = 100000;
+    uint32_t timeout_cycles = 1000000;
     uint32_t no_use = 0;
     bool verbose = false;
 #ifdef DIFFTEST
@@ -546,6 +630,10 @@ int main(int argc, char **argv)
         else if (arg == "-v" || arg == "--verbose")
         {
             verbose = true;
+        }
+        else if (arg == "--no-mem-trace")
+        {
+            enable_mem_trace = false;
         }
 #ifdef DIFFTEST
         else if (arg == "--diff")
@@ -632,6 +720,7 @@ int main(int argc, char **argv)
 
     std::cout << "程序大小: " << instruction_memory.size() << " 条指令" << std::endl;
     std::cout << "仿真超时: " << timeout_cycles << " 个周期" << std::endl;
+    std::cout << "内存跟踪: " << (enable_mem_trace ? "启用" : "禁用") << std::endl;
     std::cout << "开始仿真..." << std::endl;
 
     // 复位
@@ -743,5 +832,5 @@ int main(int argc, char **argv)
     cleanup_memory();
 
     // 根据是否命中GOOD TRAP返回相应的退出码
-    return hit_good_trap ? 0 : 1;
+    return (hit_good_trap && sim_time > 10) ? 0 : 1;
 }

@@ -148,6 +148,9 @@ VL_ATTR_COLD void Vysyx_25050147_top___024root___ctor_var_reset(Vysyx_25050147_t
     vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__is_branch = VL_RAND_RESET_I(1);
     vlSelf->ysyx_25050147_top__DOT__exu__DOT__myalu__DOT____VdfgExtracted_hf56215be__0 = VL_RAND_RESET_I(1);
     vlSelf->ysyx_25050147_top__DOT__idu__DOT__op_src2_I = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__memload_change__DOT__mem_data = VL_RAND_RESET_I(32);
+    vlSelf->ysyx_25050147_top__DOT__memstore_change__DOT__wmask1 = VL_RAND_RESET_I(8);
+    vlSelf->ysyx_25050147_top__DOT__memstore_change__DOT__result = VL_RAND_RESET_I(32);
     vlSelf->__Vfunc_pmem_read__0__Vfuncout = 0;
     vlSelf->__Vfunc_pmem_read__3__Vfuncout = 0;
     vlSelf->__Vtableidx1 = 0;

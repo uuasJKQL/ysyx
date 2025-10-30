@@ -25,6 +25,7 @@ class Vysyx_25050147_top___024root final : public VerilatedModule {
     CData/*0:0*/ ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__Cin;
     CData/*0:0*/ ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__is_branch;
     CData/*0:0*/ ysyx_25050147_top__DOT__exu__DOT__myalu__DOT____VdfgExtracted_hf56215be__0;
+    CData/*7:0*/ ysyx_25050147_top__DOT__memstore_change__DOT__wmask1;
     CData/*6:0*/ __Vtableidx1;
     CData/*0:0*/ __Vtrigrprev__TOP__clk;
     CData/*0:0*/ __VactContinue;
@@ -41,6 +42,8 @@ class Vysyx_25050147_top___024root final : public VerilatedModule {
     IData/*31:0*/ ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__Result;
     IData/*31:0*/ ysyx_25050147_top__DOT__exu__DOT__myalu__DOT__t_no_Cin;
     IData/*31:0*/ ysyx_25050147_top__DOT__idu__DOT__op_src2_I;
+    IData/*31:0*/ ysyx_25050147_top__DOT__memload_change__DOT__mem_data;
+    IData/*31:0*/ ysyx_25050147_top__DOT__memstore_change__DOT__result;
     IData/*31:0*/ __Vfunc_pmem_read__0__Vfuncout;
     IData/*31:0*/ __Vfunc_pmem_read__3__Vfuncout;
     IData/*31:0*/ __VstlIterCount;

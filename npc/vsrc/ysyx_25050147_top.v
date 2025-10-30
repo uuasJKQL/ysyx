@@ -37,7 +37,6 @@ module ysyx_25050147_top (
     wire is_branch;
     wire is_beq;
     assign waddr = rd;
-    assign wmask = 8'b0000_1111;
     assign wdata = op_type[0] ? pc + 4 :( op_type[3]?mem_out:result);//1
 assign inst = pmem_read(pc);
     Reg #(32, 32'h80000000) PC (
@@ -98,18 +97,19 @@ assign inst = pmem_read(pc);
         alu_op,
         is_beq
     );
- ysyx_25050147_memls memload_change(
+ ysyx_25050147_meml memload_change(
 inst[14:12],
+result[1:0],
 mem,
 mem_out//store or load data
 
-
    );
-    ysyx_25050147_memls memstore_change(
+    ysyx_25050147_mems memstore_change(
 inst[14:12],
+result[1:0],
 rdata2,
-mem_in//store or load data
-
+mem_in,//store or load data
+wmask
 
    );
     wire is_ebreak;

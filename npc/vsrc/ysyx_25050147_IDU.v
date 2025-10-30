@@ -42,7 +42,7 @@ module ysyx_25050147_IDU (
                 op_type = ELSE;
                 op_src1 = op_src1_I;
                 op_src2 = op_src2_I;
-                alu_op  = {1'b0, mem[14:12]};
+                alu_op  = {mem[30]&(mem[14]|mem[13]|mem[12]),mem[14:12]};
             end
             7'b0010111: begin  //auipc  U
                 op_type = ELSE;
