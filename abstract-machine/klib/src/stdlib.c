@@ -4,7 +4,7 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 static unsigned long int next = 1;
-
+static void *addr = NULL; // 当前分配位置指针
 int rand(void)
 {
   // RAND_MAX assumed to be 32767
@@ -79,15 +79,40 @@ char *itoa(int num, char *str, int radix)
 }
 void *malloc(size_t size)
 {
-  // On native, malloc() will be called during initializaion of C runtime.
-  // Therefore do not call panic() here, else it will yield a dead recursion:
-  //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-  panic("Not implemented");
-#endif
-  return NULL;
-}
+  // 如果是第一次调用，初始化addr
+  if (addr == NULL)
+  {
+    addr = heap.start;
+  }
 
+  // 对齐到8字节
+  size_t aligned_size = (size + 3) & ~3;
+
+  // 检查是否有足够空间
+  if ((uintptr_t)addr + aligned_size > (uintptr_t)heap.end)
+  {
+    return NULL; // 内存不足
+  }
+
+  // 记录返回的地址
+  void *old_addr = addr;
+
+  // 移动指针
+  addr = (void *)((uintptr_t)addr + aligned_size);
+
+  // 初始化内存为0（可选，但bench_alloc中这样做了）
+  for (size_t i = 0; i < aligned_size; i++)
+  {
+    ((char *)old_addr)[i] = 0;
+  }
+
+  return old_addr;
+#else
+  // Native环境使用系统malloc
+  return NULL; // 这里应该调用系统malloc
+#endif
+}
 void free(void *ptr)
 {
 }

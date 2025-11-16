@@ -243,7 +243,6 @@ static long load_img()
   fclose(fp);
   return size;
 }
-
 static int parse_args(int argc, char *argv[])
 {
   const struct option table[] = {
@@ -295,9 +294,11 @@ void init_monitor(int argc, char *argv[])
   /* Perform some global initialization. */
 
   /* Parse arguments. */
-  parse_args(argc, argv);
-  parse_elf(elf_file);
 
+  parse_args(argc, argv);
+#ifdef CONFIG_FTRACE
+  parse_elf(elf_file);
+#endif
   /* Set random seed. */
   init_rand();
 

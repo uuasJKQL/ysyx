@@ -24,7 +24,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc)
   {
     if (ref_r->gpr[i] != gpr(i))
     {
-
+      printf("Register %s(x%d) mismatch: ref = 0x%08x, dut = 0x%08x\n",
+             reg_name(i), i, ref_r->gpr[i], gpr(i));
       return false;
     }
   }

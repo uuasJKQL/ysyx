@@ -8,16 +8,42 @@
 #include <dlfcn.h>
 #include <map>
 #include <cstring>
+#include <time.h>
 
 #include "Vysyx_25050147_top.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "Vysyx_25050147_top__Dpi.h"
 #include "svdpi.h"
+#include <chrono>
 
+// 时钟相关变量 - 使用系统时间
+static std::chrono::steady_clock::time_point boot_time;
+static bool clock_initialized = false;
 static Vysyx_25050147_top *ysyx_25050147_top;
 vluint64_t sim_time = 0;
+void initialize_clock()
+{
+    if (!clock_initialized)
+    {
+        boot_time = std::chrono::steady_clock::now();
+        clock_initialized = true;
+        printf("时钟初始化完成，使用系统时间\n");
+    }
+}
 
+// 获取当前时间（微秒）
+uint64_t get_current_time_us()
+{
+    if (!clock_initialized)
+    {
+        initialize_clock();
+    }
+
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(now - boot_time);
+    return duration.count();
+}
 // 全局变量存储指令内存
 std::vector<uint32_t> instruction_memory;
 bool exit1 = 0;
@@ -25,7 +51,7 @@ bool hit_good_trap = false;
 int exit_code = -1;
 
 // 内存跟踪开关
-bool enable_mem_trace = true;
+bool enable_mem_trace = false;
 
 // 寄存器名称映射
 const char *reg_names[32] = {
@@ -80,6 +106,18 @@ const std::vector<uint32_t> DEFAULT_PROGRAM = {
 #define MEM_BASE 0x80000000         // 内存基地址
 static uint8_t *memory = nullptr;
 
+// MMIO设备地址定义
+#define UART_BASE 0xa00003f8
+#define CLOCK_BASE 0xa0000048
+
+// 串口状态寄存器
+#define UART_LSR 0x5
+#define UART_LSR_THRE 0x20 // 发送保持寄存器空
+
+// 时钟相关变量
+static uint64_t clock_counter = 0;
+static uint64_t last_clock_read_time = 0;
+
 // 地址转换函数：将虚拟地址转换为物理地址
 uint32_t virtual_to_physical(uint32_t vaddr)
 {
@@ -93,12 +131,87 @@ uint32_t virtual_to_physical(uint32_t vaddr)
     return 0xFFFFFFFF;
 }
 
+// 检查地址是否为MMIO地址
+bool is_mmio_address(uint32_t addr)
+{
+    return (addr == UART_BASE) || (addr == CLOCK_BASE) ||
+           (addr == UART_BASE + UART_LSR);
+}
+
+// 处理串口写入
+void uart_write(uint32_t data, uint8_t mask)
+{
+    if (mask & 0x1)
+    { // 只处理最低字节的写入
+        uint8_t ch = data & 0xFF;
+        putchar(ch);
+        fflush(stdout); // 确保立即输出
+    }
+}
+
+// 处理串口读取
+uint32_t uart_read(uint32_t addr)
+{
+    if (addr == UART_BASE)
+    {
+        // 串口数据寄存器 - 读取时返回0（没有输入）
+        return 0;
+    }
+    else if (addr == UART_BASE + UART_LSR)
+    {
+        // 串口状态寄存器 - 总是返回发送保持寄存器空
+        return UART_LSR_THRE;
+    }
+    return 0;
+}
+
+// 处理时钟读取
+uint32_t clock_read()
+{
+    // 返回当前的时钟计数值（低32位）
+    clock_counter++;
+    return clock_counter & 0xFFFFFFFF;
+}
+
 // 打印内存访问详情
 void print_memory_access(const char *type, uint32_t vaddr, uint32_t paddr,
                          uint32_t value, uint8_t mask, size_t size, bool is_write)
 {
     if (!enable_mem_trace)
         return;
+
+    // 对于MMIO访问，特别标记
+    if (is_mmio_address(vaddr))
+    {
+        printf("[MMIO %s] vaddr=0x%08x, ", is_write ? "WRITE" : "READ", vaddr);
+
+        if (is_write)
+        {
+            printf("value=0x%08x, mask=0x%02x", value, mask);
+            if (vaddr == UART_BASE && (mask & 0x1))
+            {
+                uint8_t ch = value & 0xFF;
+                if (ch >= 32 && ch <= 126)
+                {
+                    printf(", char='%c'", ch);
+                }
+                else
+                {
+                    printf(", char=0x%02x", ch);
+                }
+            }
+        }
+        else
+        {
+            printf("value=0x%08x", value);
+            if (vaddr == CLOCK_BASE)
+            {
+                printf(" (clock counter)");
+            }
+        }
+        printf("\n");
+        return;
+    }
 
     printf("[MEM %s] vaddr=0x%08x, paddr=0x%08x, ",
            is_write ? "WRITE" : "READ", vaddr, paddr);
@@ -138,46 +251,83 @@ void print_memory_access(const char *type, uint32_t vaddr, uint32_t paddr,
     printf("\n");
 }
 
-// DPI-C 函数实现
+// DPI-C 函数实现 - 添加MMIO支持
 extern "C" int pmem_read(int raddr)
 {
-    // 总是读取地址为 `raddr & ~0x3u` 的4字节返回
     uint32_t aligned_addr = raddr & ~0x3u;
 
-    // 检查内存是否初始化
+    // 检查MMIO设备 - 时钟
+    if (aligned_addr == CLOCK_BASE)
+    {
+        initialize_clock(); // 确保时钟已初始化
+
+        // 读取时钟低32位
+        uint64_t current_time = get_current_time_us();
+        uint32_t clock_low = current_time & 0xFFFFFFFF;
+
+        print_memory_access("READ", aligned_addr, 0, clock_low, 0xF, 4, false);
+        return clock_low;
+    }
+    else if (aligned_addr == CLOCK_BASE + 4)
+    {
+        initialize_clock(); // 确保时钟已初始化
+
+        // 读取时钟高32位
+        uint64_t current_time = get_current_time_us();
+        uint32_t clock_high = (current_time >> 32) & 0xFFFFFFFF;
+
+        print_memory_access("READ", aligned_addr, 0, clock_high, 0xF, 4, false);
+        return clock_high;
+    }
+    else if (aligned_addr == UART_BASE || aligned_addr == UART_BASE + UART_LSR)
+    {
+        uint32_t uart_value = uart_read(aligned_addr);
+        print_memory_access("READ", aligned_addr, 0, uart_value, 0xF, 4, false);
+        return uart_value;
+    }
+
+    // 其余内存读取代码保持不变...
     if (!memory)
     {
         printf("错误: 内存未初始化!\n");
         return 0;
     }
 
-    // 地址转换
     uint32_t phys_addr = virtual_to_physical(aligned_addr);
-
-    // 检查地址是否在有效范围内
     if (phys_addr == 0xFFFFFFFF || phys_addr >= MEM_SIZE - 3)
     {
-        // 对于不在我们管理范围内的地址，返回0
         return 0;
     }
 
-    // 读取4字节
     uint32_t value = 0;
     value |= (uint32_t)memory[phys_addr + 0] << 0;
     value |= (uint32_t)memory[phys_addr + 1] << 8;
     value |= (uint32_t)memory[phys_addr + 2] << 16;
     value |= (uint32_t)memory[phys_addr + 3] << 24;
 
-    // 打印内存读取详情
     print_memory_access("READ", aligned_addr, phys_addr, value, 0xF, 4, false);
-
     return value;
 }
-
 extern "C" void pmem_write(int waddr, int wdata, char wmask)
 {
     // 总是往地址为 `waddr & ~0x3u` 的4字节按写掩码 `wmask` 写入 `wdata`
     uint32_t aligned_addr = waddr & ~0x3u;
+
+    // 检查MMIO设备
+    if (aligned_addr == UART_BASE)
+    {
+        uart_write(wdata, wmask);
+        print_memory_access("WRITE", aligned_addr, 0, wdata, wmask, 4, true);
+        //  printf("已写入串口数据: %c\n\n\n\n\n", wdata & 0xFF);
+        return;
+    }
+    else if (aligned_addr == CLOCK_BASE)
+    {
+        // 时钟寄存器通常是只读的，忽略写入
+        print_memory_access("WRITE", aligned_addr, 0, wdata, wmask, 4, true);
+        printf("警告: 尝试写入只读的时钟寄存器，已忽略\n");
+        return;
+    }
 
     // 检查内存是否初始化
     if (!memory)
@@ -203,10 +353,10 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask)
     old_value |= (uint32_t)memory[phys_addr + 2] << 16;
     old_value |= (uint32_t)memory[phys_addr + 3] << 24;
 
-    printf("[MEM WRITE] vaddr=0x%08x, paddr=0x%08x, old_value=0x%08x, new_value=0x%08x, mask=0x%02x\n",
-           aligned_addr, phys_addr, old_value, wdata, wmask);
+    //  printf("[MEM WRITE] vaddr=0x%08x, paddr=0x%08x, old_value=0x%08x, new_value=0x%08x, mask=0x%02x\n",
+    //       aligned_addr, phys_addr, old_value, wdata, wmask);
 
-    printf("           Bytes: [");
+    // printf("           Bytes: [");
     for (int i = 0; i < 4; i++)
     {
         uint32_t byte_addr = phys_addr + i;
@@ -220,17 +370,17 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask)
 
         if (wmask & (1 << i))
         {
-            printf("0x%08x: 0x%02x->0x%02x", aligned_addr + i, old_byte, new_byte);
+            //  printf("0x%08x: 0x%02x->0x%02x", aligned_addr + i, old_byte, new_byte);
         }
         else
         {
-            printf("0x%08x: 0x%02x", aligned_addr + i, old_byte);
+            // printf("0x%08x: 0x%02x", aligned_addr + i, old_byte);
         }
 
-        if (i < 3)
-            printf(", ");
+        // if (i < 3)
+        //  printf(", ");
     }
-    printf("]\n");
+    // printf("]\n");
 
     // 根据写掩码写入相应的字节
     if (wmask & 0x1)
@@ -664,7 +814,7 @@ int main(int argc, char **argv)
 
     // 初始化内存
     initialize_memory();
-
+    initialize_clock();
     // 初始化阴影寄存器
     memset(shadow_registers, 0, sizeof(shadow_registers));
 
@@ -721,6 +871,7 @@ int main(int argc, char **argv)
     std::cout << "程序大小: " << instruction_memory.size() << " 条指令" << std::endl;
     std::cout << "仿真超时: " << timeout_cycles << " 个周期" << std::endl;
     std::cout << "内存跟踪: " << (enable_mem_trace ? "启用" : "禁用") << std::endl;
+    std::cout << "MMIO设备已启用: 串口(0xa00003f8), 时钟(0xa0000048)" << std::endl;
     std::cout << "开始仿真..." << std::endl;
 
     // 复位
@@ -735,7 +886,7 @@ int main(int argc, char **argv)
     shadow_registers[2] = 0x80009000; // 设置初始栈指针
 
     // 主仿真循环
-    while (!exit1 && sim_time < timeout_cycles)
+    while (!exit1)
     {
         ysyx_25050147_top->clk = 0;
         ysyx_25050147_top->eval();
@@ -779,7 +930,7 @@ int main(int argc, char **argv)
 
         if (sim_time % 1000 == 0)
         {
-            printf("仿真进度: %lu/%u 周期\n", sim_time, timeout_cycles);
+            //  printf("仿真进度: %lu/%u 周期\n", sim_time, timeout_cycles);
         }
     }
 

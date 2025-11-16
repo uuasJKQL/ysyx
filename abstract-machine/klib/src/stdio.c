@@ -51,7 +51,69 @@ void int_to_str(int num, char *str)
 }
 int printf(const char *fmt, ...)
 {
-  panic("Not implemented");
+  // 创建一个足够大的缓冲区来存储格式化后的字符串
+  char buffer[10240];
+  va_list ap;
+  va_start(ap, fmt);
+  char *s;
+  char *st = buffer;
+  int d;
+  char num_buffer[32]; // 用于数字转换的缓冲区
+
+  // 格式化字符串（复制sprintf的逻辑）
+  while (*fmt)
+  {
+    switch (*fmt)
+    {
+    case '%':
+      switch (*(++fmt))
+      {
+      case 's':
+        s = va_arg(ap, char *);
+        strcpy(st, s);
+        st += strlen(s);
+        break;
+      case 'd':
+        d = va_arg(ap, int);
+        itoa(d, num_buffer, 10);
+        strcpy(st, num_buffer);
+        st += strlen(num_buffer);
+        break;
+      case '%':
+        *st = *fmt;
+        st++;
+        break;
+      default:
+        // 不支持的格式符，直接输出%和字符
+        *st = '%';
+        st++;
+        *st = *fmt;
+        st++;
+        break;
+      }
+      break;
+    default:
+      *st = *fmt;
+      st++;
+      break;
+    }
+    fmt++;
+  }
+  *st = '\0';
+  va_end(ap);
+
+  // 使用putch输出整个字符串
+  char *p = buffer;
+  int count = 0;
+  while (*p)
+  {
+    putch(*p);
+
+    p++;
+    count++;
+  }
+
+  return count; // 返回输出的字符数
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap)

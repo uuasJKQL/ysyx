@@ -78,12 +78,63 @@ void *memset(void *s, int c, size_t n)
 
 void *memmove(void *dst, const void *src, size_t n)
 {
-  panic("Not implemented");
-}
+  // 增加更严格的参数检查
+  if (dst == NULL || src == NULL)
+  {
+    return dst; // 或者根据标准返回NULL?
+  }
 
+  if (n == 0)
+  {
+    return dst;
+  }
+
+  char *d = (char *)dst;
+  const char *s = (const char *)src;
+
+  // 检查内存区域是否有效（简单版本）
+  // 在实际系统中可能需要更复杂的内存范围检查
+  if ((uintptr_t)d < (uintptr_t)heap.start ||
+      (uintptr_t)d + n > (uintptr_t)heap.end ||
+      (uintptr_t)s < (uintptr_t)heap.start ||
+      (uintptr_t)s + n > (uintptr_t)heap.end)
+  {
+    // 内存访问越界 - 在实际系统中应该处理这种错误
+    return dst;
+  }
+
+  // 处理内存重叠
+  if (d < s)
+  {
+    // 从前向后复制
+    for (size_t i = 0; i < n; i++)
+    {
+      d[i] = s[i];
+    }
+  }
+  else if (d > s)
+  {
+    // 从后向前复制
+    for (size_t i = n; i > 0; i--)
+    {
+      d[i - 1] = s[i - 1];
+    }
+  }
+
+  return dst;
+}
 void *memcpy(void *out, const void *in, size_t n)
 {
-  panic("Not implemented");
+  char *dst = out;
+  const char *src = in;
+  
+  // 逐字节复制
+  for (size_t i = 0; i < n; i++)
+  {
+    dst[i] = src[i];
+  }
+  
+  return out;
 }
 
 int memcmp(const void *s1, const void *s2, size_t n)

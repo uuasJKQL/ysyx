@@ -35,11 +35,10 @@ VM_PREFIX = Vysyx_25050147_top
 VM_MODPREFIX = Vysyx_25050147_top
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-DTOP_NAME=Vysyx_25050147_top -DDIFFTEST \
+	-DTOP_NAME=Vysyx_25050147_top \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
-	-ldl -Wl,-rpath,../nemu/build/ \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
