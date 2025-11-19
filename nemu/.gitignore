@@ -8,5 +8,7 @@
 !.gitignore
 !README.md
 !Kconfig
+!.vscode/
+!.vscode/launch.json
 include/config
 include/generated

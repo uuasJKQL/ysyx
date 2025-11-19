@@ -60,6 +60,10 @@ __am_asm_trap:
   mv a0, sp
   call __am_irq_handle
 
+  # 关键修改：在恢复上下文之前，先切换到新进程的栈
+  # __am_irq_handle返回的新上下文指针在a0中
+  mv sp, a0    # 切换栈指针到新进程的上下文结构
+
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1

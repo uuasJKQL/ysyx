@@ -58,6 +58,7 @@ int printf(const char *fmt, ...)
   char *s;
   char *st = buffer;
   int d;
+  unsigned int x;  // 添加用于十六进制的变量
   char num_buffer[32]; // 用于数字转换的缓冲区
 
   // 格式化字符串（复制sprintf的逻辑）
@@ -78,6 +79,40 @@ int printf(const char *fmt, ...)
         itoa(d, num_buffer, 10);
         strcpy(st, num_buffer);
         st += strlen(num_buffer);
+        break;
+      case 'x':
+        x = va_arg(ap, unsigned int);
+        // 将数字转换为十六进制字符串
+        {
+          char *p = num_buffer;
+          unsigned int n = x;
+          int digits = 0;
+          
+          // 处理0的特殊情况
+          if (n == 0) {
+            *p++ = '0';
+            digits = 1;
+          } else {
+            // 计算十六进制位数
+            unsigned int temp = n;
+            while (temp > 0) {
+              digits++;
+              temp >>= 4;
+            }
+            
+            // 从最高位开始填充
+            p += digits;
+            *p = '\0';
+            do {
+              *--p = "0123456789abcdef"[n & 0xF];
+              n >>= 4;
+            } while (n > 0);
+            p += digits; // 指向字符串结尾
+          }
+          
+          strcpy(st, num_buffer);
+          st += digits;
+        }
         break;
       case '%':
         *st = *fmt;
@@ -108,7 +143,6 @@ int printf(const char *fmt, ...)
   while (*p)
   {
     putch(*p);
-
     p++;
     count++;
   }

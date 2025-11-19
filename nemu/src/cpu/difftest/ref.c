@@ -53,6 +53,7 @@ __EXPORT void difftest_regcpy(CPU_state *dut, bool direction)
     {
       cpu.gpr[i] = ctx->gpr[i];
     }
+    // cpu.csr[0] = ctx->csr[0];
     cpu.pc = ctx->pc;
   }
   else
@@ -62,6 +63,7 @@ __EXPORT void difftest_regcpy(CPU_state *dut, bool direction)
     {
       ctx->gpr[i] = cpu.gpr[i];
     }
+
     ctx->pc = cpu.pc;
   }
 }

@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug NEMU",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/riscv32-nemu-interpreter", // 指向 NEMU 可执行文件
+      "args": [
+        "-f",
+        "/home/wyh/ysyx-workbench/am-kernels/tests/cpu7-tests/build/recursion-riscv32-nemu.elf",
+        "/home/wyh/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv32-nemu.bin"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "为 gdb 启用整齐打印",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      // "preLaunchTask": "build-nemu"  // 调试前自动编译（需配置 tasks.json）
+    }
+  ]
+}
